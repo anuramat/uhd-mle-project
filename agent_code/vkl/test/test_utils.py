@@ -1,25 +1,23 @@
-import torch
-from torch import tensor
+from torch import tensor, rand, equal, ones
 from agent_code.vkl.utils import get_pov
 
 
-map_base = torch.ones(1, 3, 3)
-map_random = torch.rand(1, 5, 5)
-
-
 class TestGetPov:
-    def test_random_center(self):
-        result = get_pov(map_random, (2, 2))
-        expected = map_random[..., 1:4, 1:4]
-        assert torch.equal(result, expected)
-
     def test_trivial(self):
-        result = get_pov(map_random, (2, 2), 2)
-        expected = map_random
-        assert torch.equal(result, expected)
+        input = rand(2, 5, 5)
+        result = get_pov(input, (2, 2), 2)
+        expected = input
+        assert equal(result, expected)
+
+    def test_random_center(self):
+        input = rand(2, 5, 5)
+        result = get_pov(input, (2, 2))
+        expected = input[..., 1:4, 1:4]
+        assert equal(result, expected)
 
     def test_small_corner(self):
-        result = get_pov(map_base, (0, 0))
+        input = ones(1, 3, 3)
+        result = get_pov(input, (0, 0))
         expected = tensor(
             [
                 [
@@ -29,10 +27,11 @@ class TestGetPov:
                 ]
             ]
         )
-        assert torch.equal(result, expected)
+        assert equal(result, expected)
 
     def test_big_corner(self):
-        result = get_pov(map_base, (0, 0), 3)
+        input = ones(1, 3, 3)
+        result = get_pov(input, (0, 0), 3)
         expected = tensor(
             [
                 [
@@ -46,5 +45,4 @@ class TestGetPov:
                 ]
             ]
         )
-        print(result)
-        assert torch.equal(result, expected)
+        assert equal(result, expected)
