@@ -11,8 +11,9 @@ def get_map(state):
     bombs = tensor(state["bombs"])
     explosion_maps = tensor(state["explosion_maps"])
 
-    field = tensor(state["field"])  # TODO improve: split by value in -1,0,1
+    field = tensor(state["field"])
     # -1 = wall, 0 = free, +1 = crate
+    # we additionally define -2 for OOB squares
 
     coins = zeros_like(bombs)
     coins_list = state["coins"]
@@ -21,8 +22,10 @@ def get_map(state):
         coins[x, y] = 1
 
     players = zeros_like(bombs)
+    # -1 for bombless players, +1 for bombful
     for player in state["others"]:
-        # score = player[1]  # TODO maybe avoid people with high scores lmao
+        # name = player[0] # completely useless, unless we can trashtalk (?)
+        # score = player[1]  # XXX maybe avoid people with high scores lmao
         has_bomb = player[2]
         x, y = player[3]
         players[x, y] = -1
