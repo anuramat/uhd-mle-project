@@ -53,16 +53,21 @@ def get_pov(
 
     h, w = map.shape[-2:]
 
-    if left < 0 or top < 0 or right > w or bottom > h:
-        padding_ltrb = [
-            max(-left + min(0, right), 0),
-            max(-top + min(0, bottom), 0),
-            max(right - max(w, left), 0),
-            max(bottom - max(h, top), 0),
-        ]
-        return pad(
-            input=map[..., max(top, 0) : bottom, max(left, 0) : right],
-            pad=padding_ltrb,
-            value=OOB_MAP_VALUE,
-        )
-    return map[..., top:bottom, left:right]
+    if not (left < 0 or top < 0 or right > w or bottom > h):
+        return map[..., top:bottom, left:right]
+
+    cropped = map[..., max(top, 0) : bottom, max(left, 0) : right]
+
+    padding_lrtb = [
+        max(-left + min(0, right), 0),
+        max(right - max(w, left), 0),
+        max(-top + min(0, bottom), 0),
+        max(bottom - max(h, top), 0),
+    ]
+
+    return pad(
+        input=cropped,
+        pad=padding_lrtb,
+        mode="constant",
+        value=OOB_MAP_VALUE,
+    )

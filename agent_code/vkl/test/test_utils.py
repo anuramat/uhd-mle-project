@@ -9,18 +9,42 @@ map_random = torch.rand(1, 5, 5)
 
 class TestGetPov:
     def test_random_center(self):
-
-        random = get_pov(map_random, (2, 2))
-        random_expected = map_random[:, 1:4, 1:4]
-        print(random)
-        print(random_expected)
-        assert torch.equal(random, random_expected)
+        result = get_pov(map_random, (2, 2))
+        expected = map_random[..., 1:4, 1:4]
+        assert torch.equal(result, expected)
 
     def test_trivial(self):
-        trivial = get_pov(map_random, (2, 2), 2)
-        assert torch.equal(trivial, map_random)
+        result = get_pov(map_random, (2, 2), 2)
+        expected = map_random
+        assert torch.equal(result, expected)
 
-    def test_corner(self):
-        corner = get_pov(map_base, (0, 0))
-        print(corner)
-        assert torch.equal(corner, map_base)  # TODO
+    def test_small_corner(self):
+        result = get_pov(map_base, (0, 0))
+        expected = tensor(
+            [
+                [
+                    [-2.0, -2.0, -2.0],
+                    [-2.0, 1.0, 1.0],
+                    [-2.0, 1.0, 1.0],
+                ]
+            ]
+        )
+        assert torch.equal(result, expected)
+
+    def test_big_corner(self):
+        result = get_pov(map_base, (0, 0), 3)
+        expected = tensor(
+            [
+                [
+                    [-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0],
+                    [-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0],
+                    [-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0],
+                    [-2.0, -2.0, -2.0, 1.0, 1.0, 1.0, -2.0],
+                    [-2.0, -2.0, -2.0, 1.0, 1.0, 1.0, -2.0],
+                    [-2.0, -2.0, -2.0, 1.0, 1.0, 1.0, -2.0],
+                    [-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0],
+                ]
+            ]
+        )
+        print(result)
+        assert torch.equal(result, expected)
