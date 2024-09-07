@@ -31,6 +31,7 @@
                 tqdm
                 pygame
                 torchWithCuda
+                pytest
               ]))
           ];
         };
