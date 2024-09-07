@@ -55,12 +55,12 @@ def get_pov(
     left = x - radius
     right = x + radius + 1
 
-    h, w = map.shape[-2:]
+    w, h = map.shape[-2:]
 
     if not (left < 0 or top < 0 or right > w or bottom > h):
-        return map[..., top:bottom, left:right]
+        return map[..., left:right, top:bottom]
 
-    cropped = map[..., max(top, 0) : bottom, max(left, 0) : right]
+    cropped = map[..., max(left, 0) : right, max(top, 0) : bottom]
 
     padding_lrtb = [
         max(-left + min(0, right), 0),
