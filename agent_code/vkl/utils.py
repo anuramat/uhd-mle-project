@@ -41,10 +41,12 @@ def get_pov(
     radius: int = 1,  # radius=1 corresponds to 3x3 input
 ) -> Tensor:
 
+    # NOTE y = 0 is top
+
     x, y = center
 
-    top = y + radius
-    bottom = y - radius
+    top = y - radius
+    bottom = y + radius
 
     left = x - radius
     right = x + radius
