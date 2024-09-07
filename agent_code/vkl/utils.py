@@ -46,14 +46,12 @@ def get_pov(
     x, y = center
 
     top = y - radius
-    bottom = y + radius
+    bottom = y + radius + 1
 
     left = x - radius
-    right = x + radius
+    right = x + radius + 1
 
     h, w = map.shape[-2:]
-    right = left + 2 * radius + 1
-    bottom = top + 2 * radius + 1
 
     if left < 0 or top < 0 or right > w or bottom > h:
         padding_ltrb = [
