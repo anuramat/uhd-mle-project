@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from agent_code.vkl.utils import ACTIONS
 
 
-class BinaryImageClassifier(nn.Module):
+class BasicModel(nn.Module):
     def __init__(self, n_chan, radius):
         super().__init__()
 

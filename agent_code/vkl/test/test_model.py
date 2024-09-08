@@ -1,14 +1,14 @@
 from torch import tensor, randn
-from agent_code.vkl.model import BinaryImageClassifier
+from agent_code.vkl.model import BasicModel
 from agent_code.vkl.utils import STR2INT
 
 
-class TestModel:
+class TestModels:
     def basic(self):
         radius = 9
         n_channels = 5
 
-        model = BinaryImageClassifier(n_channels, 9)
+        model = BasicModel(n_channels, 9)
 
         bombful = tensor([1])
         map = randn(1, n_channels, radius, radius)
