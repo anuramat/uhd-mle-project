@@ -19,7 +19,7 @@ def game_events_occurred(self, state, action_string: str, new_state, events):
     action_number = STR2INT[action_string]
 
     move = (get_map(state), bombful, pos, action_number)
-    # TODO save action as a number, save only necessary fields of self
+
     self.moves.append(move)
 
 

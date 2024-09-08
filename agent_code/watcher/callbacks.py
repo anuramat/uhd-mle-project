@@ -1,4 +1,5 @@
 import agent_code.rule_based_agent.callbacks as based
+from agent_code.vkl.utils import WAIT, ACTIONS
 
 
 def setup(self):
@@ -6,4 +7,7 @@ def setup(self):
 
 
 def act(self, game_state: dict) -> str:
-    return based.act(self, game_state)
+    action = based.act(self, game_state)
+    if action not in ACTIONS:
+        return WAIT
+    return action

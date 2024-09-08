@@ -4,16 +4,25 @@ from torch import tensor, zeros_like, Tensor
 
 from torch.nn.functional import pad
 
+
+# TODO maybe move this somewhere else
+
 OOB_MAP_VALUE = -2
 
+BOMB = "BOMB"
+UP = "UP"
+DOWN = "DOWN"
+LEFT = "LEFT"
+RIGHT = "RIGHT"
+WAIT = "WAIT"
 
-INT2STR = [
-    "BOMB",
-    "UP",
-    "DOWN",
-    "LEFT",
-    "RIGHT",
-    "WAIT",
+ACTIONS = INT2STR = [
+    BOMB,
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+    WAIT,
 ]
 STR2INT = {}
 for i, v in enumerate(INT2STR):
