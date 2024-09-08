@@ -18,5 +18,5 @@ def game_events_occurred(self, state, action, new_state, events):
 
 def end_of_round(self, state, action, events):
     self.rounds_played += 1
-    save(self.moves, f"moves_{self.rounds_played}.pt")
+    save(self.moves, f"data/moves_{self.rounds_played}.pt")
     self.moves = []
