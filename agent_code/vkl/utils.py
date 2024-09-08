@@ -7,6 +7,19 @@ from torch.nn.functional import pad
 OOB_MAP_VALUE = -2
 
 
+INT2STR = [
+    "UP",
+    "DOWN",
+    "LEFT",
+    "RIGHT",
+    "WAIT",
+    "BOMB",
+]
+STR2INT = {}
+for i, v in enumerate(INT2STR):
+    STR2INT[v] = i
+
+
 def get_map(state):
     """
     returns the state of the game encoded in a 5*h*w tensor
