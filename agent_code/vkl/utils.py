@@ -10,22 +10,25 @@ OOB_MAP_VALUE = -2
 def get_map(state):
     """
     returns the state of the game encoded in a 5*h*w tensor
-    omits the players has_bomb property
+    omits the players properties
     """
-    bombs = tensor(state["bombs"])
-    explosion_maps = tensor(state["explosion_maps"])
-
-    field = tensor(state["field"])
-    # -1 = wall, 0 = free, +1 = crate
+    # field: -1 = wall, 0 = free, +1 = crate
     # we additionally define -2 for OOB squares
+    field = tensor(state["field"])
+    explosion_map = tensor(state["explosion_map"])
+    bombs = zeros_like(field)
+    coins = zeros_like(field)
+    players = zeros_like(field)
 
-    coins = zeros_like(bombs)
+    for bomb in state["bombs"]:
+        pos, ticks = bomb
+        bombs[*pos] = ticks
+
     coins_list = state["coins"]
     for coin in coins_list:
         x, y = coin
         coins[x, y] = 1
 
-    players = zeros_like(bombs)
     # -1 for bombless players, +1 for bombful
     for player in state["others"]:
         # name = player[0] # completely useless, unless we can trashtalk (?)
@@ -36,7 +39,7 @@ def get_map(state):
         if has_bomb:
             players[x, y] = 1
 
-    torch.stack([bombs, explosion_maps, field, coins, players]).transpose(
+    torch.stack([bombs, explosion_map, field, coins, players]).transpose(
         -1, -2
     )  # c, w, h -> c, h, w
 
