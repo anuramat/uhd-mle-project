@@ -36,7 +36,9 @@ def get_map(state):
         if has_bomb:
             players[x, y] = 1
 
-    return torch.stack([bombs, explosion_maps, field, coins, players])
+    torch.stack([bombs, explosion_maps, field, coins, players]).transpose(
+        -1, -2
+    )  # c, w, h -> c, h, w
 
 
 def get_pov(
@@ -47,7 +49,7 @@ def get_pov(
 
     # NOTE y = 0 is top
 
-    x, y = center
+    y, x = center
 
     top = y - radius
     bottom = y + radius + 1
@@ -55,12 +57,12 @@ def get_pov(
     left = x - radius
     right = x + radius + 1
 
-    w, h = map.shape[-2:]
+    h, w = map.shape[-2:]
 
     if not (left < 0 or top < 0 or right > w or bottom > h):
-        return map[..., left:right, top:bottom]
+        return map[..., top:bottom, left:right]
 
-    cropped = map[..., max(left, 0) : right, max(top, 0) : bottom]
+    cropped = map[..., max(top, 0) : bottom, max(left, 0) : right]
 
     padding_lrtb = [
         max(-left + min(0, right), 0),
