@@ -5,5 +5,5 @@ def setup(self):
     based.setup(self)
 
 
-def act(self, game_state: dict):
-    based.act(self, game_state)
+def act(self, game_state: dict) -> str:
+    return based.act(self, game_state)
