@@ -1,4 +1,4 @@
-from agent_code.vkl.utils import get_map
+from agent_code.vkl.utils import get_map, STR2INT, INT2STR
 from torch import save
 
 copy_counter = 0
@@ -6,14 +6,19 @@ copy_counter = 0
 
 def setup_training(self):
     self.moves = []
-    self.games_played = 0 # for checkpoints, unused for now
+    self.games_played = 0  # for checkpoints, unused for now
     global copy_counter
     self.number = copy_counter
     copy_counter += 1
 
 
-def game_events_occurred(self, state, action, new_state, events):
-    move = (get_map(state), state["self"], action)
+def game_events_occurred(self, state, action_string: str, new_state, events):
+    player = state["self"]
+    bombful = player[2]
+    pos = player[3]
+    action_number = STR2INT[action_string]
+
+    move = (get_map(state), bombful, pos, action_number)
     # TODO save action as a number, save only necessary fields of self
     self.moves.append(move)
 
