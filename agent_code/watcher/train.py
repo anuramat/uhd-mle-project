@@ -1,4 +1,4 @@
-from agent_code.vkl.utils import get_map, STR2INT, INT2STR
+from agent_code.vkl.utils import get_map, STR2INT
 from torch import save
 
 copy_counter = 0
