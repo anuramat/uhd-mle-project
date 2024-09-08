@@ -8,16 +8,18 @@ OOB_MAP_VALUE = -2
 
 
 INT2STR = [
+    "BOMB",
     "UP",
     "DOWN",
     "LEFT",
     "RIGHT",
     "WAIT",
-    "BOMB",
 ]
 STR2INT = {}
 for i, v in enumerate(INT2STR):
     STR2INT[v] = i
+
+N_CHANNELS = 5
 
 
 def get_map(state):
