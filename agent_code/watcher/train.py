@@ -1,9 +1,5 @@
 from agent_code.vkl.utils import get_map
-from collections import namedtuple
 from torch import save
-import random
-
-Move = namedtuple("Move", ["map", "player", "action"])
 
 copy_counter = 0
 
@@ -17,7 +13,7 @@ def setup_training(self):
 
 
 def game_events_occurred(self, state, action, new_state, events):
-    move = Move(map=get_map(state), player=state["self"], action=action)
+    move = (get_map(state), state["self"], action)
     # TODO save action as a number, save only necessary fields of self
     self.moves.append(move)
 
