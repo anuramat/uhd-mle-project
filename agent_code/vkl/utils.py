@@ -39,7 +39,7 @@ def get_map(state):
         if has_bomb:
             players[x, y] = 1
 
-    torch.stack([bombs, explosion_map, field, coins, players]).transpose(
+    return torch.stack([bombs, explosion_map, field, coins, players]).transpose(
         -1, -2
     )  # c, w, h -> c, h, w
 
