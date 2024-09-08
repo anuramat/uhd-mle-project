@@ -1,13 +1,19 @@
 from agent_code.vkl.utils import get_map
 from collections import namedtuple
 from torch import save
+import random
 
 Move = namedtuple("Move", ["map", "player", "action"])
+
+copy_counter = 0
 
 
 def setup_training(self):
     self.moves = []
     self.rounds_played = 0
+    global copy_counter
+    self.number = copy_counter
+    copy_counter += 1
 
 
 def game_events_occurred(self, state, action, new_state, events):
@@ -18,5 +24,5 @@ def game_events_occurred(self, state, action, new_state, events):
 
 def end_of_round(self, state, action, events):
     self.rounds_played += 1
-    save(self.moves, f"data/moves_{self.rounds_played}.pt")
+    save(self.moves, f"data/moves_{self.number}_{self.rounds_played}.pt")
     self.moves = []
