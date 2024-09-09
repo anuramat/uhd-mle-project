@@ -53,14 +53,14 @@ class SkipCoordsModel(nn.Module):
     def __init__(self):
         super().__init__()
 
-        self.preconv = nn.Sequential(
+        self.conv = nn.Sequential(
             nn.LazyConv2d(32, 3, padding=0),  # strictly zero padding on input
             nn.ReLU(),
             nn.LazyBatchNorm2d(),
             nn.LazyConv2d(64, 3, padding=1),
             nn.ReLU(),
             nn.LazyBatchNorm2d(),
-            nn.LazyConv2d(128, 3),
+            nn.LazyConv2d(128, 3, padding=2),
             nn.ReLU(),
             nn.LazyBatchNorm2d(),
         )
