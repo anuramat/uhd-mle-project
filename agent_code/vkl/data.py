@@ -1,4 +1,4 @@
-from torch import load, tensor, Tensor
+from torch import tensor, Tensor
 from torch.utils.data import Dataset
 from agent_code.vkl.utils import get_map, get_pov
 from agent_code.vkl.consts import *
@@ -17,8 +17,6 @@ class MoveDataset(Dataset):
     def __init__(
         self, packed: list[tuple[Tensor, bool, tuple[int, int], int]], radius=1
     ):
-        if type(packed) is str:
-            packed = load(packed)
 
         self.data = []
         for move in packed:
