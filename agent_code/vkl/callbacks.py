@@ -8,11 +8,11 @@ def setup(self):
 
 
 def act(self, game_state: dict):
-    map = get_map(game_state)
+    map = get_map(game_state).unsqueeze(0)
     player = game_state["self"]
     bomb = player[2]
 
-    proba = self.model(map.float(), tensor(bomb).float())
+    proba = self.model(map.float(), tensor(bomb).float().unsqueeze(0))
     if not bomb:
         proba[STR2INT[BOMB]] = 0
     print(proba)
