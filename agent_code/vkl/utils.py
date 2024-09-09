@@ -1,34 +1,7 @@
 import torch
-
 from torch import tensor, zeros_like, Tensor
-
 from torch.nn.functional import pad
-
-
-# TODO maybe move this somewhere else
-
-OOB_MAP_VALUE = -2
-
-BOMB = "BOMB"
-UP = "UP"
-DOWN = "DOWN"
-LEFT = "LEFT"
-RIGHT = "RIGHT"
-WAIT = "WAIT"
-
-ACTIONS = INT2STR = [
-    BOMB,
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT,
-    WAIT,
-]
-STR2INT = {}
-for i, v in enumerate(INT2STR):
-    STR2INT[v] = i
-
-N_CHANNELS = 5
+from agent_code.vkl.consts import *
 
 
 def get_map(state):
@@ -70,14 +43,14 @@ def get_map(state):
 
 def get_pov(
     map: Tensor,
-    center: tuple[int, int],
+    center_yx: tuple[int, int],
     radius: int = 1,  # radius=1 corresponds to 3x3 input
 ) -> Tensor:
 
     # NOTE y = 0 is top
     # NOTE the field is 17*17 (allegedly), so the max radius is 16
 
-    y, x = center
+    y, x = center_yx
 
     top = y - radius
     bottom = y + radius + 1

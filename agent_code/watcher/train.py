@@ -1,4 +1,4 @@
-from agent_code.vkl.utils import get_map, STR2INT
+from agent_code.vkl.utils import pack_move
 from torch import save
 
 copy_counter = 0
@@ -13,13 +13,7 @@ def setup_training(self):
 
 
 def game_events_occurred(self, state, action_string: str, new_state, events):
-    player = state["self"]
-    bombful = player[2]
-    pos = player[3]
-    action_number = STR2INT[action_string]
-
-    move = (get_map(state), bombful, pos, action_number)
-
+    move = pack_move(state, action_string)
     self.moves.append(move)
 
 
