@@ -21,7 +21,7 @@ class MoveDataset(Dataset):
         self.data = []
         for move in packed:
             x, y = move[2]
-            pov = get_pov(move[0], (y, x), radius)
+            pov = get_pov(move[0], (y, x), radius).float()
             action = tensor(move[-1])
             bombful = tensor(move[1])
 
