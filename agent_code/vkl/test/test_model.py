@@ -1,5 +1,5 @@
 from torch import tensor, randn
-from agent_code.vkl.model import BasicModel
+from agent_code.vkl.models import BasicModel
 from agent_code.vkl.utils import STR2INT
 
 
