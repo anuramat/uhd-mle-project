@@ -48,7 +48,7 @@ def get_pov(
 ) -> Tensor:
 
     # NOTE y = 0 is top
-    # NOTE the field is 17*17 (allegedly), so the max radius is 16
+    # NOTE the field is 17*17 (allegedly), so the max radius is 16+1 for OOB to be included
 
     y, x = center_yx
 
