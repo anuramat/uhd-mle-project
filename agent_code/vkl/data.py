@@ -22,10 +22,12 @@ class MoveDataset(Dataset):
         for move in packed:
             x, y = move[2]
             pov = get_pov(move[0], (y, x), radius).float()
-            action = tensor(move[-1])
-            bombful = tensor(move[1])
+            action_list = [0] * len(ACTIONS)
+            action_list[move[-1]] = 1
+            action = tensor(action_list)
+            bomb = tensor(move[1])
 
-            self.data.append((pov, bombful, action))
+            self.data.append((pov, bomb, action))
 
     def __len__(self):
         return len(self.data)
