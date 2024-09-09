@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.optim.lr_scheduler import OneCycleLR
 from agent_code.vkl.consts import N_CHANNELS, ACTIONS
 import pytorch_lightning as L
 
@@ -18,6 +19,11 @@ class BasicModel(nn.Module):
             # this one is kinda special yeah
             nn.ReLU(),
             64,
+            nn.ReLU(),
+            nn.AvgPool2d(2),
+            128,
+            nn.ReLU(),
+            128,
             nn.ReLU(),
             nn.AvgPool2d(2),
             128,
@@ -76,20 +82,35 @@ class BasicModel(nn.Module):
 
 
 class LitBasicModel(L.LightningModule):
-    def __init__(self, model):
+    def __init__(self, model, total_steps):
         super().__init__()
         self.model = model
+        self.total_steps = total_steps
 
     def training_step(self, batch, batch_idx):
         map, bomb, action = batch
         out = self.model(map, bomb)
         action = action
         loss = F.cross_entropy(out, action)
+
+        # opt = self.optimizers()
+        sch = self.lr_schedulers()
+
         self.log("train_loss", loss)
+        self.log("lr", sch.get_last_lr()[0])  # pyright:ignore
         return loss
 
-    def configure_optimizers(self):
+    def configure_optimizers(self):  # pyright:ignore
         # Adam is for some reason invisible to pyright
         # <https://github.com/pytorch/pytorch/issues/134985>
         optimizer = torch.optim.Adam(self.parameters(), lr=3e-4)  # pyright: ignore
-        return optimizer
+        scheduler = OneCycleLR(
+            optimizer=optimizer, max_lr=3e-4, total_steps=self.total_steps
+        )
+        return {
+            "optimizer": optimizer,
+            "lr_scheduler": {
+                "scheduler": scheduler,
+                "interval": "step",
+            },
+        }

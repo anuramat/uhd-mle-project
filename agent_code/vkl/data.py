@@ -1,4 +1,4 @@
-from torch import tensor, Tensor
+from torch import tensor, Tensor, float32
 from torch.utils.data import Dataset
 from agent_code.vkl.utils import get_map, get_pov
 from agent_code.vkl.consts import *
@@ -15,15 +15,17 @@ def pack_move(state: dict, action_string: str):
 
 class MoveDataset(Dataset):
     def __init__(
-        self, packed: list[tuple[Tensor, bool, tuple[int, int], int]], radius=1
+        self,
+        packed: list[tuple[Tensor, bool, tuple[int, int], int]],
+        radius=1,
+        dtype=float32,
     ):
-
         self.data = []
         for move in packed:
             x, y = move[2]
-            pov = get_pov(move[0], (y, x), radius).float()
-            action = tensor(move[-1])
-            bomb = tensor(move[1])
+            pov = get_pov(move[0], (y, x), radius).to(dtype=dtype)
+            action = move[-1]
+            bomb = tensor(move[1], dtype=dtype)
 
             self.data.append((pov, bomb, action))
 

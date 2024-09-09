@@ -9,7 +9,7 @@ def setup(self):
 
 
 def act(self, game_state: dict):
-    eps = 0.1
+    eps = -1
     map = get_map(game_state)
 
     player = game_state["self"]
