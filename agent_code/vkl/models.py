@@ -16,7 +16,7 @@ class BasicModel(nn.Module):
         )
 
         offset = 4
-        self.conv_output_dim = 32 * (radius - offset) ** 2
+        self.conv_output_dim = 32 * (radius * 2 + 1 - offset) ** 2
 
         self.fc = nn.Sequential(
             nn.Linear(self.conv_output_dim + 1, 128),

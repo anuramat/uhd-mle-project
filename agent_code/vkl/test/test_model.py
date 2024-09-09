@@ -10,7 +10,7 @@ class TestModels:
         model = BasicModel(radius)
 
         bombful = tensor([1])
-        map = randn(1, N_CHANNELS, radius, radius)
+        map = randn(1, N_CHANNELS, radius * 2 + 1, radius)
 
         output = model(map, bombful)
         assert list(output.shape) == [1, len(ACTIONS)]
