@@ -45,7 +45,7 @@ class LitBasicModel(L.LightningModule):
     def training_step(self, batch, batch_idx):
         map, bomb, action = batch
         out = self.model(map, bomb)
-        action = action.float()
+        action = action
         loss = F.cross_entropy(out, action)
         self.log("train_loss", loss)
 

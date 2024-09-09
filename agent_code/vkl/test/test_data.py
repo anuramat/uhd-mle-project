@@ -1,3 +1,4 @@
+import torch
 from agent_code.vkl.consts import N_CHANNELS, ACTIONS
 from agent_code.vkl.data import MoveDataset
 from torch import load
@@ -14,4 +15,6 @@ class TestDataset:
         map, bomb, action = next(iter(dataloader))
         assert list(map.shape) == [batch_size, N_CHANNELS, 3, 3]
         assert list(bomb.shape) == [batch_size]
-        assert list(action.shape) == [batch_size, len(ACTIONS)]
+        print(bomb.dtype)
+        assert bomb.dtype == torch.bool
+        assert list(action.shape) == [batch_size]
