@@ -112,4 +112,7 @@ screenshots/*.webm
 replays/
 results/
 
+# @anuramat
 *.pt
+lightning_logs/
+
