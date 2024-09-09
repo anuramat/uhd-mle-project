@@ -79,5 +79,5 @@ class LitBasicModel(L.LightningModule):
     def configure_optimizers(self):
         # Adam is for some reason invisible to pyright
         # <https://github.com/pytorch/pytorch/issues/134985>
-        optimizer = torch.optim.Adam(self.parameters(), lr=3e-3)  # pyright: ignore
+        optimizer = torch.optim.Adam(self.parameters(), lr=3e-4)  # pyright: ignore
         return optimizer
