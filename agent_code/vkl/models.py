@@ -49,7 +49,56 @@ class BasicModel(nn.Module):
         return F.softmax(x, dim=1)
 
 
-class LitBasicModel(L.LightningModule):
+class SkipCoordsModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+        self.preconv = nn.Sequential(
+            nn.LazyConv2d(32, 3, padding=0),  # strictly zero padding on input
+            nn.ReLU(),
+            nn.LazyBatchNorm2d(),
+            nn.LazyConv2d(64, 3, padding=1),
+            nn.ReLU(),
+            nn.LazyBatchNorm2d(),
+            nn.LazyConv2d(128, 3),
+            nn.ReLU(),
+            nn.LazyBatchNorm2d(),
+        )
+
+        self.conv2 = nn.Sequential(
+            nn.LazyConv2d(128, 3),
+            nn.ReLU(),
+            nn.LazyBatchNorm2d(),
+            nn.LazyConv2d(128, 3),
+            nn.ReLU(),
+            nn.LazyBatchNorm2d(),
+            nn.LazyConv2d(128, 3),
+            nn.ReLU(),
+            nn.LazyBatchNorm2d(),
+        )
+
+        self.fc = nn.Sequential(
+            nn.LazyLinear(256),
+            nn.ReLU(),
+            nn.LazyBatchNorm1d(),
+            nn.LazyLinear(128),
+            nn.ReLU(),
+            nn.LazyBatchNorm1d(),
+            nn.LazyLinear(len(ACTIONS)),
+        )
+
+    def forward(self, map, bomb):
+        x = self.conv(map)
+        x = torch.cat((x, map[:, -2:-1, ...]), dim=1)
+        x = self.conv2(x)
+        x = torch.flatten(x, start_dim=1)
+        x = torch.cat((x, bomb.reshape(-1, 1)), dim=1)
+        x = self.fc(x)
+
+        return F.softmax(x, dim=1)
+
+
+class Lighter(L.LightningModule):
     def __init__(self, model, total_steps):
         super().__init__()
         self.model = model
