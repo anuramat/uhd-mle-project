@@ -29,7 +29,7 @@ from gc import collect
 # # Parameters
 
 # %%
-epochs = 250
+epochs = 1024
 batch_size = 512
 torch.set_float32_matmul_precision("medium")
 dtype = torch.float32
@@ -56,6 +56,9 @@ dataloader = DataLoader(
 )
 del moves
 collect()
+
+# %%
+len(dataset)
 
 # %%
 plt.imshow(dataset[0][0][0, ...])

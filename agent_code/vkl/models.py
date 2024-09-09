@@ -43,8 +43,6 @@ class BasicModel(nn.Module):
     def forward(self, map, bomb):
         x = self.conv(map)
         x = torch.flatten(x, start_dim=1)
-        print(x.shape)
-        print(bomb.shape)
         x = torch.cat((x, bomb.reshape(-1, 1)), dim=1)
         x = self.fc(x)
 

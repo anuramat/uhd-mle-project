@@ -15,8 +15,9 @@ def act(self, game_state: dict):
     proba = self.model(map.float(), tensor(bomb).float().unsqueeze(0))
     if not bomb:
         proba[STR2INT[BOMB]] = 0
-    print(proba)
+        print("BOMB REJECTED")
     index = int(argmax(proba))
     action = INT2STR[index]
+    print(proba)
 
     return action
