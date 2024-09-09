@@ -5,7 +5,7 @@ from agent_code.vkl.models import BasicModel
 
 class TestModels:
     def test_basic(self):
-        radius = 9
+        radius = 17
         side = radius * 2 + 1
 
         model = BasicModel(radius)

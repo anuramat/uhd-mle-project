@@ -15,6 +15,5 @@ class TestDataset:
         map, bomb, action = next(iter(dataloader))
         assert list(map.shape) == [batch_size, N_CHANNELS, 3, 3]
         assert list(bomb.shape) == [batch_size]
-        print(bomb.dtype)
         assert bomb.dtype == torch.bool
         assert list(action.shape) == [batch_size]

@@ -10,47 +10,59 @@ class BasicModel(nn.Module):
         super().__init__()
 
         # (!) zero or 1 padding
-        conv_layers = (
+        conv_list = [
             # TODO shift map values by min+1, add padding=1
             # intuition: 0 means idk
             # for now we could just compensate with a bigger fov radius
-            nn.Conv2d(N_CHANNELS, 10, kernel_size=3, stride=1, padding=0),
+            nn.Conv2d(N_CHANNELS, 32, kernel_size=3, stride=1, padding=0),
+            # this one is kinda special yeah
             nn.ReLU(),
-            nn.Conv2d(10, 20, kernel_size=3, stride=1, padding=1),
+            64,
             nn.ReLU(),
-            nn.Conv2d(20, 40, kernel_size=3, stride=1, padding=1),
+            nn.AvgPool2d(2),
+            128,
             nn.ReLU(),
-            nn.Conv2d(40, 20, kernel_size=3, stride=1, padding=1),
+            128,
             nn.ReLU(),
-            nn.Conv2d(20, 10, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
-        )
-        self.conv = nn.Sequential(*conv_layers)
+            nn.AvgPool2d(2),
+        ]
 
-        # calculate total h/w decrease
-        offset = sum(
-            [
-                2 if type(i) is nn.Conv2d and i.padding[0] == i.padding[1] == 0 else 0
-                for i in conv_layers
-            ]
-        )
-        orig_dim = radius * 2 + 1
-        out_channels = conv_layers[-2].out_channels
-        final_dim = orig_dim - offset
-        print(f"final conv layer size: {final_dim}")
-        self.conv_output_dim = out_channels * final_dim**2
+        out_channels = 0
+        for i, v in enumerate(conv_list):
+            if type(v) is int:
+                conv_list[i] = nn.Conv2d(
+                    out_channels, v, kernel_size=3, stride=1, padding=1
+                )
+                out_channels = v
+            if type(v) is nn.Conv2d:
+                out_channels = v.out_channels
 
-        self.fc = nn.Sequential(
-            nn.Linear(self.conv_output_dim + 1, 128),
+        self.conv = nn.Sequential(*conv_list)
+
+        # calculate output dim
+        orig_side = radius * 2 + 1
+        fake_input = torch.zeros(1, 5, orig_side, orig_side)
+        fake_output = self.conv(fake_input)
+        side = fake_output.shape[-1]
+        print(f"final conv layer side: {side}")
+        self.conv_output_dim = out_channels * side**2
+
+        fc_list = [
+            256,
             nn.ReLU(),
-            nn.Linear(128, 128),
+            128,
             nn.ReLU(),
-            nn.Linear(128, 128),
-            nn.ReLU(),
-            nn.Linear(128, 128),
-            nn.ReLU(),
-            nn.Linear(128, len(ACTIONS)),
-        )
+        ]
+
+        out_features = self.conv_output_dim + 1
+        for i, v in enumerate(fc_list):
+            if type(v) is int:
+                fc_list[i] = nn.Linear(out_features, v)
+                out_features = v
+            if type(v) is nn.Linear:
+                out_features = v.out_features
+        fc_list.append(nn.Linear(out_features, len(ACTIONS)))
+        self.fc = nn.Sequential(*fc_list)
 
     def forward(self, map, bombful):
         x = self.conv(map)

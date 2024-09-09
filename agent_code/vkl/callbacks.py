@@ -1,6 +1,7 @@
 from torch import load, argmax, tensor
-from agent_code.vkl.consts import INT2STR
+from agent_code.vkl.consts import ACTIONS, INT2STR
 from agent_code.vkl.utils import get_map, get_pov
+from random import random, choice
 
 
 def setup(self):
@@ -8,6 +9,7 @@ def setup(self):
 
 
 def act(self, game_state: dict):
+    eps = 0.1
     map = get_map(game_state)
 
     player = game_state["self"]
@@ -16,7 +18,10 @@ def act(self, game_state: dict):
     pov = get_pov(map, (y, x), self.fov)
 
     proba = self.model(pov.float(), tensor(bomb).float())
+    print(proba)
     index = int(argmax(proba))
     action = INT2STR[index]
+    if random() < eps:
+        action = choice(ACTIONS)
 
     return action
