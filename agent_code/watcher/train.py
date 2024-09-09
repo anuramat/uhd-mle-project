@@ -20,4 +20,4 @@ def game_events_occurred(self, state, action_string: str, new_state, events):
 def end_of_round(self, state, action, events):
     self.games_played += 1
     if self.games_played % 10 == 0:
-        save(self.moves, f"data/moves_{self.number}.pt")
+        save(self.moves, f"output/moves_{self.number}.pt")
