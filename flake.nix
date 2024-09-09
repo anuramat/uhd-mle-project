@@ -16,9 +16,13 @@
       system: let
         pkgs = import nixpkgs {
           inherit system;
-          config.allowUnfree = true;
+          config = {
+            allowUnfree = true;
+            cudaSupport = true;
+            cudnnSupoprt = true;
+          };
         };
-      in rec {
+      in {
         devShell = pkgs.mkShell {
           buildInputs = [
             (pkgs.python3.withPackages (python-pkgs:
@@ -30,11 +34,7 @@
                 scikit-learn
                 tqdm
                 pygame
-                # # this conflicts with lightning
-                # torchWithCuda
-                # # this "fix" doesn't work for some reason
-                # pytorch-lightning.override
-                # {torch = torchWithCuda;}
+                torch
                 pytorch-lightning # import as `pytorch_lightning`
                 pytest
                 tensorboard
