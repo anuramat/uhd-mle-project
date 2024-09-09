@@ -37,6 +37,7 @@
                 # {torch = torchWithCuda;}
                 pytorch-lightning # import as `pytorch_lightning`
                 pytest
+                tensorboard
               ]))
           ];
         };
