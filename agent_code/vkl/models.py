@@ -48,6 +48,7 @@ class LitBasicModel(L.LightningModule):
         action = action
         loss = F.cross_entropy(out, action)
         self.log("train_loss", loss)
+        return loss
 
     def configure_optimizers(self):
         # Adam is for some reason invisible to pyright
