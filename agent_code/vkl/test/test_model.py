@@ -1,6 +1,6 @@
 from torch import tensor, randn
 from agent_code.vkl.models import BasicModel
-from agent_code.vkl.utils import STR2INT
+from agent_code.vkl.utils import ACTIONS
 
 
 class TestModels:
@@ -14,4 +14,4 @@ class TestModels:
         map = randn(1, n_channels, radius, radius)
 
         output = model(bombful, map)
-        assert list(output.shape) == [1, len(STR2INT)]
+        assert list(output.shape) == [1, len(ACTIONS)]

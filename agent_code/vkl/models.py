@@ -1,15 +1,15 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from agent_code.vkl.utils import ACTIONS
+from agent_code.vkl.consts import N_CHANNELS, ACTIONS
 
 
 class BasicModel(nn.Module):
-    def __init__(self, n_chan, radius):
+    def __init__(self, radius):
         super().__init__()
 
         self.conv = nn.Sequential(
-            nn.Conv2d(n_chan, 16, kernel_size=3, stride=1, padding=0),
+            nn.Conv2d(N_CHANNELS, 16, kernel_size=3, stride=1, padding=0),
             nn.ReLU(),
             nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=0),
             nn.ReLU(),
