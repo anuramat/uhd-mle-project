@@ -30,7 +30,12 @@
                 scikit-learn
                 tqdm
                 pygame
-                torchWithCuda
+                # # this conflicts with lightning
+                # torchWithCuda
+                # # this "fix" doesn't work for some reason
+                # pytorch-lightning.override
+                # {torch = torchWithCuda;}
+                pytorch-lightning # import as `pytorch_lightning`
                 pytest
               ]))
           ];
