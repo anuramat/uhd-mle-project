@@ -25,7 +25,7 @@ class MoveDataset(Dataset):
             action = tensor(move[-1])
             bombful = tensor(move[1])
 
-            self.data.append((pov, action, bombful))
+            self.data.append((pov, bombful, action))
 
     def __len__(self):
         return len(self.data)

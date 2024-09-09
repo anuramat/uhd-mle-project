@@ -24,7 +24,7 @@ class BasicModel(nn.Module):
             nn.Linear(128, len(ACTIONS)),
         )
 
-    def forward(self, bombful, map):
+    def forward(self, map, bombful):
         x = self.conv(map)
 
         x = x.reshape(-1, self.conv_output_dim)
