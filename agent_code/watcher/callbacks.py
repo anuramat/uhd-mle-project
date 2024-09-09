@@ -1,5 +1,5 @@
 import agent_code.rule_based_agent.callbacks as based
-from agent_code.vkl.utils import WAIT, ACTIONS
+from agent_code.vkl.consts import WAIT, ACTIONS
 
 
 def setup(self):

@@ -1,4 +1,4 @@
-from agent_code.vkl.utils import pack_move
+from agent_code.vkl.data import pack_move
 from torch import save
 
 copy_counter = 0
