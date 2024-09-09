@@ -32,6 +32,7 @@
                 numpy
                 scipy
                 scikit-learn
+                matplotlib
                 tqdm
                 pygame
                 torch
