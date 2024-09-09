@@ -1,33 +1,22 @@
-from torch import tensor, Tensor, float32
 from torch.utils.data import Dataset
-from agent_code.vkl.utils import get_map, get_pov
+from agent_code.vkl.utils import get_map
 from agent_code.vkl.consts import *
 
 
 def pack_move(state: dict, action_string: str):
     player = state["self"]
-    bombful = player[2]
-    pos = player[3]
+    bomb = player[2]
     action_number = STR2INT[action_string]
 
-    return (get_map(state), bombful, pos, action_number)
+    return (get_map(state), bomb, action_number)
 
 
 class MoveDataset(Dataset):
     def __init__(
         self,
-        packed: list[tuple[Tensor, bool, tuple[int, int], int]],
-        radius=1,
-        dtype=float32,
+        data,
     ):
-        self.data = []
-        for move in packed:
-            x, y = move[2]
-            pov = get_pov(move[0], (y, x), radius).to(dtype=dtype)
-            action = move[-1]
-            bomb = tensor(move[1], dtype=dtype)
-
-            self.data.append((pov, bomb, action))
+        self.data = data
 
     def __len__(self):
         return len(self.data)

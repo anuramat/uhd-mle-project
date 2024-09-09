@@ -1,17 +1,14 @@
 from torch import tensor, randn
-from agent_code.vkl.consts import N_CHANNELS, ACTIONS
+from agent_code.vkl.consts import FIELD_SIZE, N_CHANNELS, ACTIONS
 from agent_code.vkl.models import BasicModel
 
 
 class TestModels:
     def test_basic(self):
-        radius = 17
-        side = radius * 2 + 1
+        model = BasicModel().eval()
 
-        model = BasicModel(radius)
+        bomb = tensor([1])
+        map = randn(1, N_CHANNELS, FIELD_SIZE, FIELD_SIZE)
 
-        bombful = tensor([1])
-        map = randn(1, N_CHANNELS, side, side)
-
-        output = model(map, bombful)
+        output = model(map, bomb)
         assert list(output.shape) == [1, len(ACTIONS)]

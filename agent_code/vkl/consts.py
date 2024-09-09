@@ -19,4 +19,5 @@ STR2INT = {}
 for i, v in enumerate(INT2STR):
     STR2INT[v] = i
 
-N_CHANNELS = 5
+N_CHANNELS = 7
+FIELD_SIZE = 17
