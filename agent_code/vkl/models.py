@@ -1,7 +1,9 @@
 import torch
+import torch.optim
 import torch.nn as nn
 import torch.nn.functional as F
 from agent_code.vkl.consts import N_CHANNELS, ACTIONS
+import pytorch_lightning as L
 
 
 class BasicModel(nn.Module):
@@ -33,3 +35,22 @@ class BasicModel(nn.Module):
         x = self.fc(x)
 
         return F.softmax(x, dim=1)
+
+
+class LitBasicModel(L.LightningModule):
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+
+    def training_step(self, batch, batch_idx):
+        map, bomb, action = batch
+        out = self.model(map, bomb)
+        action = action.float()
+        loss = F.cross_entropy(out, action)
+        self.log("train_loss", loss)
+
+    def configure_optimizers(self):
+        # Adam is for some reason invisible to pyright
+        # <https://github.com/pytorch/pytorch/issues/134985>
+        optimizer = torch.optim.Adam(self.parameters(), lr=3e-3)  # pyright: ignore
+        return optimizer
