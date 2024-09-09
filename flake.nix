@@ -23,8 +23,8 @@
           buildInputs = [
             (pkgs.python3.withPackages (python-pkgs:
               with python-pkgs; [
-                # jupyter
-                # jupytext
+                jupyter
+                jupytext
                 numpy
                 scipy
                 scikit-learn
