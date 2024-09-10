@@ -1,4 +1,4 @@
-from torch import load, argmax, tensor
+from torch import load, tensor, multinomial
 from agent_code.vkl.consts import INT2STR, BOMB, STR2INT
 from agent_code.vkl.utils import get_map
 
@@ -12,12 +12,12 @@ def act(self, game_state: dict):
     player = game_state["self"]
     bomb = player[2]
 
-    proba = self.model(map.float(), tensor(bomb).float().unsqueeze(0))
+    proba = self.model(map.float(), tensor(bomb).float().unsqueeze(0)).flatten()
+
     if not bomb:
         proba[STR2INT[BOMB]] = 0
-        print("BOMB REJECTED")
-    index = int(argmax(proba))
-    action = INT2STR[index]
-    print(proba)
+
+    idx = int(multinomial(proba, num_samples=1))
+    action = INT2STR[idx]
 
     return action
