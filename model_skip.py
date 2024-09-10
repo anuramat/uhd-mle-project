@@ -32,7 +32,6 @@ from gc import collect
 epochs = 1024
 batch_size = 512
 torch.set_float32_matmul_precision("medium")
-dtype = torch.float32
 precision = "16-mixed"
 
 # %% [markdown]
@@ -71,7 +70,6 @@ plt.imshow(dataset[0][0][-1, ...])
 
 # %%
 raw_model = models.SkipCoordsModel()
-raw_model.to(dtype)
 total_steps = epochs * len(dataloader)
 model = models.Lighter(raw_model, total_steps=total_steps)
 # model = torch.compile(model) # doesn't work for now

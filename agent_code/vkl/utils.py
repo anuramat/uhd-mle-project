@@ -1,6 +1,5 @@
 import torch
-from torch import float32, zeros_like
-from agent_code.vkl.consts import *
+from torch import float32, zeros_like, tensor
 
 
 def get_map(state):
@@ -8,7 +7,6 @@ def get_map(state):
     returns the state of the game encoded in a 5*h*w tensor
     omits the players properties
     """
-    tensor = lambda x: torch.tensor(x, dtype=float32)
     # field: -1 = wall, 0 = free, +1 = crate
     # we additionally define -2 for OOB squares
     field = tensor(state["field"])
@@ -19,8 +17,8 @@ def get_map(state):
 
     n = field.shape[1]
     x, y = state["self"][3]
-    x_coord = torch.arange(-x, n - x, dtype=float32).repeat(n, 1)
-    y_coord = torch.arange(-y, n - y, dtype=float32).repeat(n, 1).transpose(0, 1)
+    x_coord = torch.arange(-x, n - x).repeat(n, 1)
+    y_coord = torch.arange(-y, n - y).repeat(n, 1).transpose(0, 1)
 
     for bomb in state["bombs"]:
         pos, ticks = bomb
@@ -31,7 +29,8 @@ def get_map(state):
         x, y = coin
         coins[x, y] = 1
 
-    # -1 for bombless players, +1 for bombful
+    # -1 for bombless players,
+    # +1 for players with a bomb
     for player in state["others"]:
         has_bomb = player[2]
         x, y = player[3]

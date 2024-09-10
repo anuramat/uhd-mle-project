@@ -1,43 +1,53 @@
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
+from torch import Tensor
+from torch.nn import (
+    ReLU,
+    LazyConv2d,
+    Sequential,
+    LazyBatchNorm2d,
+    LazyBatchNorm1d,
+    Module,
+    ModuleList,
+    LazyLinear,
+)
+from torch.nn.functional import softmax, cross_entropy
 from torch.optim.lr_scheduler import OneCycleLR
 from agent_code.vkl.consts import ACTIONS
 import pytorch_lightning as L
 
 
-class BasicModel(nn.Module):
+class BasicModel(Module):
     def __init__(self):
         super().__init__()
 
-        self.conv = nn.Sequential(
-            nn.LazyConv2d(32, 3, padding=0),  # strictly zero padding on input
-            nn.ReLU(),
-            nn.LazyBatchNorm2d(),
-            nn.LazyConv2d(64, 3),
-            nn.ReLU(),
-            nn.LazyBatchNorm2d(),
-            nn.LazyConv2d(128, 3),
-            nn.ReLU(),
-            nn.LazyBatchNorm2d(),
-            nn.LazyConv2d(128, 3),
-            nn.ReLU(),
-            nn.LazyBatchNorm2d(),
-            nn.LazyConv2d(128, 3),
-            nn.ReLU(),
-            nn.LazyConv2d(128, 3),
-            nn.ReLU(),
-            nn.LazyBatchNorm2d(),
+        self.conv = Sequential(
+            LazyConv2d(32, 3, padding=0),  # strictly zero padding on input
+            ReLU(),
+            LazyBatchNorm2d(),
+            LazyConv2d(64, 3),
+            ReLU(),
+            LazyBatchNorm2d(),
+            LazyConv2d(128, 3),
+            ReLU(),
+            LazyBatchNorm2d(),
+            LazyConv2d(128, 3),
+            ReLU(),
+            LazyBatchNorm2d(),
+            LazyConv2d(128, 3),
+            ReLU(),
+            LazyConv2d(128, 3),
+            ReLU(),
+            LazyBatchNorm2d(),
         )
 
-        self.fc = nn.Sequential(
-            nn.LazyLinear(256),
-            nn.ReLU(),
-            nn.LazyBatchNorm1d(),
-            nn.LazyLinear(128),
-            nn.ReLU(),
-            nn.LazyBatchNorm1d(),
-            nn.LazyLinear(len(ACTIONS)),
+        self.fc = Sequential(
+            LazyLinear(256),
+            ReLU(),
+            LazyBatchNorm1d(),
+            LazyLinear(128),
+            ReLU(),
+            LazyBatchNorm1d(),
+            LazyLinear(len(ACTIONS)),
         )
 
     def forward(self, map, bomb):
@@ -46,56 +56,75 @@ class BasicModel(nn.Module):
         x = torch.cat((x, bomb.reshape(-1, 1)), dim=1)
         x = self.fc(x)
 
-        return F.softmax(x, dim=1)
+        return softmax(x, dim=1)
 
 
-class SkipCoordsModel(nn.Module):
+class SkipCoordsModel(Module):
     def __init__(self):
         super().__init__()
 
-        self.conv = nn.Sequential(
-            nn.LazyConv2d(32, 3, padding=0),  # strictly zero padding on input
-            nn.ReLU(),
-            nn.LazyBatchNorm2d(),
-            nn.LazyConv2d(64, 3, padding=1),
-            nn.ReLU(),
-            nn.LazyBatchNorm2d(),
-            nn.LazyConv2d(128, 3, padding=2),
-            nn.ReLU(),
-            nn.LazyBatchNorm2d(),
+        self.conv_list = ModuleList(
+            [
+                # each block should keep H, W constant, so that input can be skipcon'd
+                Sequential(
+                    # no padding, otherwise padding can be confused with an empty square:
+                    # I wish Conv2d supported constant non-zero padding...
+                    LazyConv2d(32, 3, padding=0),
+                    ReLU(),
+                    LazyBatchNorm2d(),
+                    LazyConv2d(64, 3, padding=2),
+                    ReLU(),
+                    LazyBatchNorm2d(),
+                ),
+                Sequential(
+                    LazyConv2d(128, 3, padding=1),
+                    ReLU(),
+                    LazyBatchNorm2d(),
+                ),
+                Sequential(
+                    LazyConv2d(128, 3, padding=1),
+                    ReLU(),
+                    LazyBatchNorm2d(),
+                ),
+                Sequential(
+                    LazyConv2d(128, 3, padding=1),
+                    ReLU(),
+                    LazyBatchNorm2d(),
+                ),
+                Sequential(
+                    LazyConv2d(128, 3, padding=1),
+                    ReLU(),
+                    LazyBatchNorm2d(),
+                ),
+            ]
         )
 
-        self.conv2 = nn.Sequential(
-            nn.LazyConv2d(128, 3),
-            nn.ReLU(),
-            nn.LazyBatchNorm2d(),
-            nn.LazyConv2d(128, 3),
-            nn.ReLU(),
-            nn.LazyBatchNorm2d(),
-            nn.LazyConv2d(128, 3),
-            nn.ReLU(),
-            nn.LazyBatchNorm2d(),
-        )
-
-        self.fc = nn.Sequential(
-            nn.LazyLinear(256),
-            nn.ReLU(),
-            nn.LazyBatchNorm1d(),
-            nn.LazyLinear(128),
-            nn.ReLU(),
-            nn.LazyBatchNorm1d(),
-            nn.LazyLinear(len(ACTIONS)),
+        self.fc = Sequential(
+            LazyLinear(256),
+            ReLU(),
+            LazyBatchNorm1d(),
+            LazyLinear(128),
+            ReLU(),
+            LazyBatchNorm1d(),
+            LazyLinear(len(ACTIONS)),
         )
 
     def forward(self, map, bomb):
-        x = self.conv(map)
-        x = torch.cat((x, map[:, -2:-1, ...]), dim=1)
-        x = self.conv2(x)
+        # coords = map[:, -2:, :, :]
+        x = skipper(map, map, self.conv_list)
         x = torch.flatten(x, start_dim=1)
         x = torch.cat((x, bomb.reshape(-1, 1)), dim=1)
         x = self.fc(x)
 
-        return F.softmax(x, dim=1)
+        return softmax(x, dim=1)
+
+
+def skipper(start: Tensor, skip: Tensor, layers: ModuleList):
+    res = layers[0](start)
+    for layer in layers[1:]:  # pyright: ignore
+        res = torch.cat((res, skip), dim=1)
+        res = layer(res)
+    return res
 
 
 class Lighter(L.LightningModule):
@@ -108,7 +137,7 @@ class Lighter(L.LightningModule):
         map, bomb, action = batch
         out = self.model(map, bomb)
         action = action
-        loss = F.cross_entropy(out, action)
+        loss = cross_entropy(out, action)
 
         self.log("train_loss", loss)
         self.log("lr", self.lr_schedulers().get_last_lr()[0])  # pyright:ignore
