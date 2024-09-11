@@ -21,6 +21,10 @@ ACTIONS: list[str] = [
     WAIT,
 ]
 
+CRATE = 1
+WALL = -1
+FREE = 0
+
 Position = NamedTuple("Position", [("x", int), ("y", int)])
 Player = NamedTuple(
     "Player",
