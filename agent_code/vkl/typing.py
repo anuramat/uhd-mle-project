@@ -93,7 +93,7 @@ Transition = NamedTuple(
         ),
         (
             "reward",
-            int,
+            int | float,
         ),
     ],
 )
