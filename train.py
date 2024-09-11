@@ -79,10 +79,7 @@ model = models.Lighter(raw_model, total_steps=total_steps)
 
 # %% editable=true slideshow={"slide_type": ""}
 trainer = L.Trainer(accelerator="gpu", max_epochs=epochs, precision=precision)
-try:
-    trainer.fit(model=model, train_dataloaders=dataloader)
-except KeyboardInterrupt:
-    print("stopped early on C-C")
+trainer.fit(model=model, train_dataloaders=dataloader)
 
 # %% [markdown]
 # # Save the model

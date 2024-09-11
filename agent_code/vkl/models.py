@@ -1,5 +1,5 @@
 import torch
-from torch import Tensor
+from torch import Tensor, arange
 from torch.nn import (
     ReLU,
     LazyConv2d,
@@ -10,7 +10,7 @@ from torch.nn import (
     ModuleList,
     LazyLinear,
 )
-from torch.nn.functional import softmax, cross_entropy
+from torch.nn.functional import softmax, mse_loss
 from torch.optim.lr_scheduler import OneCycleLR
 import agent_code.vkl.typing as T
 import pytorch_lightning as L
@@ -72,7 +72,7 @@ class MyBelovedCNN(Module):
         x = torch.cat((x, aux), dim=1)
         x = self.fc(x)
 
-        return softmax(x, dim=1)
+        return x
 
 
 def skipper(start: Tensor, skip: Tensor, layers: ModuleList):
@@ -90,10 +90,12 @@ class Lighter(L.LightningModule):
         self.total_steps = total_steps
 
     def training_step(self, batch, batch_idx):
-        map, aux, action = batch
-        out = self.model(map, aux)
-        action = action
-        loss = cross_entropy(out, action)
+        map, aux, action, reward = batch
+        preds_raw = self.model(map, aux)
+
+        n = map.shape[0]
+        preds = preds_raw[arange(n), action]
+        loss = mse_loss(preds, reward)
 
         self.log("train_loss", loss)
         self.log("lr", self.lr_schedulers().get_last_lr()[0])  # pyright:ignore
