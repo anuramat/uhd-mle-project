@@ -42,9 +42,9 @@ precision = "16-mixed"
 dir = "agent_code/watcher/output/"
 filenames = [f for f in listdir(dir) if f[-3:] == ".pt"][:1]
 paths = [join(dir, f) for f in filenames]
-moves = sum([load(path, weights_only=False) for path in paths], [])
+trans = sum([load(path, weights_only=False) for path in paths], [])
 
-dataset = MoveDataset(moves)
+dataset = MoveDataset(trans)
 dataloader = DataLoader(
     dataset,
     batch_size=batch_size,
@@ -53,7 +53,7 @@ dataloader = DataLoader(
     pin_memory=True,
     persistent_workers=True,
 )
-del moves
+del trans
 collect()
 
 # %%
