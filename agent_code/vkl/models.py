@@ -10,8 +10,9 @@ from torch.nn import (
     ModuleList,
     LazyLinear,
 )
-from torch.nn.functional import softmax, mse_loss
+from torch.nn.functional import mse_loss
 from torch.optim.lr_scheduler import OneCycleLR
+from torch.optim.adam import Adam
 import agent_code.vkl.typing as T
 import pytorch_lightning as L
 
@@ -84,10 +85,11 @@ def skipper(start: Tensor, skip: Tensor, layers: ModuleList):
 
 
 class Lighter(L.LightningModule):
-    def __init__(self, model, total_steps):
+    def __init__(self, model, total_steps, lr=3e-4):
         super().__init__()
         self.model = model
         self.total_steps = total_steps
+        self.lr = lr
 
     def training_step(self, batch, batch_idx):
         map, aux, action, reward = batch
@@ -102,11 +104,9 @@ class Lighter(L.LightningModule):
         return loss
 
     def configure_optimizers(self):  # pyright:ignore
-        # Adam is for some reason invisible to pyright
-        # <https://github.com/pytorch/pytorch/issues/134985>
-        optimizer = torch.optim.Adam(self.parameters(), lr=3e-4)  # pyright: ignore
+        optimizer = Adam(self.parameters(), lr=self.lr)
         scheduler = OneCycleLR(
-            optimizer=optimizer, max_lr=3e-4, total_steps=self.total_steps
+            optimizer=optimizer, max_lr=self.lr, total_steps=self.total_steps
         )
         return {
             "optimizer": optimizer,
