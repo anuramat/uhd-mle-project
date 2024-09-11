@@ -1,5 +1,3 @@
-OOB_MAP_VALUE = -2
-
 BOMB = "BOMB"
 UP = "UP"
 DOWN = "DOWN"
@@ -19,5 +17,5 @@ STR2INT = {}
 for i, v in enumerate(INT2STR):
     STR2INT[v] = i
 
-N_CHANNELS = 7
+N_CHANNELS = 8
 FIELD_SIZE = 17

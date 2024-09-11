@@ -3,7 +3,7 @@ from agent_code.vkl.data import MoveDataset
 from torch import load
 from torch.utils.data.dataloader import DataLoader
 
-batch_size = 123
+batch_size = 2
 
 
 class TestDataset:

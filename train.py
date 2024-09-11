@@ -69,7 +69,7 @@ plt.imshow(dataset[0][0][-1, ...])
 # # Model definition
 
 # %%
-raw_model = models.BasicModel()
+raw_model = models.MyBelovedCNN()
 total_steps = epochs * len(dataloader)
 model = models.Lighter(raw_model, total_steps=total_steps)
 # model = torch.compile(model) # doesn't work for now
@@ -86,5 +86,3 @@ trainer.fit(model=model, train_dataloaders=dataloader)
 
 # %%
 save(raw_model, "agent_code/vkl/output/model.pt")
-
-# %%

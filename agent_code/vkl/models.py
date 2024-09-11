@@ -16,50 +16,7 @@ from agent_code.vkl.consts import ACTIONS
 import pytorch_lightning as L
 
 
-class BasicModel(Module):
-    def __init__(self):
-        super().__init__()
-
-        self.conv = Sequential(
-            LazyConv2d(32, 3, padding=0),  # strictly zero padding on input
-            ReLU(),
-            LazyBatchNorm2d(),
-            LazyConv2d(64, 3),
-            ReLU(),
-            LazyBatchNorm2d(),
-            LazyConv2d(128, 3),
-            ReLU(),
-            LazyBatchNorm2d(),
-            LazyConv2d(128, 3),
-            ReLU(),
-            LazyBatchNorm2d(),
-            LazyConv2d(128, 3),
-            ReLU(),
-            LazyConv2d(128, 3),
-            ReLU(),
-            LazyBatchNorm2d(),
-        )
-
-        self.fc = Sequential(
-            LazyLinear(256),
-            ReLU(),
-            LazyBatchNorm1d(),
-            LazyLinear(128),
-            ReLU(),
-            LazyBatchNorm1d(),
-            LazyLinear(len(ACTIONS)),
-        )
-
-    def forward(self, map, bomb):
-        x = self.conv(map)
-        x = torch.flatten(x, start_dim=1)
-        x = torch.cat((x, bomb.reshape(-1, 1)), dim=1)
-        x = self.fc(x)
-
-        return softmax(x, dim=1)
-
-
-class SkipCoordsModel(Module):
+class MyBelovedCNN(Module):
     def __init__(self):
         super().__init__()
 
