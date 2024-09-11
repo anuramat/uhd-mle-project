@@ -1,6 +1,6 @@
 from torch import load, tensor, multinomial
-from agent_code.vkl.consts import INT2STR, BOMB, STR2INT
-from agent_code.vkl.utils import get_map
+import agent_code.vkl.typing as T
+from agent_code.vkl.preprocessing import get_map
 
 
 def setup(self):
@@ -15,9 +15,9 @@ def act(self, game_state: dict):
     proba = self.model(map.float(), tensor(bomb).float().unsqueeze(0)).flatten()
 
     if not bomb:
-        proba[STR2INT[BOMB]] = 0
+        proba[T.action_s2i(T.BOMB)] = 0
 
-    idx = int(multinomial(proba, num_samples=1))
-    action = INT2STR[idx]
+    idx = T.Action(int(multinomial(proba, num_samples=1)))
+    action = T.action_i2s(idx)
 
     return action

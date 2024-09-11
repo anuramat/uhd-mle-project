@@ -12,7 +12,7 @@ from torch.nn import (
 )
 from torch.nn.functional import softmax, cross_entropy
 from torch.optim.lr_scheduler import OneCycleLR
-from agent_code.vkl.consts import ACTIONS
+import agent_code.vkl.typing as T
 import pytorch_lightning as L
 
 
@@ -63,7 +63,7 @@ class MyBelovedCNN(Module):
             LazyLinear(128),
             ReLU(),
             LazyBatchNorm1d(),
-            LazyLinear(len(ACTIONS)),
+            LazyLinear(len(T.ACTIONS)),
         )
 
     def forward(self, map, bomb):
