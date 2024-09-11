@@ -15,7 +15,7 @@
 
 # %%
 import agent_code.vkl.models as models
-from agent_code.vkl.data import MoveDataset
+from agent_code.vkl.data import TranDataset
 from torch.utils.data import DataLoader
 from torch import load, save
 import pytorch_lightning as L
@@ -44,7 +44,7 @@ filenames = [f for f in listdir(dir) if f[-3:] == ".pt"][:1]
 paths = [join(dir, f) for f in filenames]
 trans = sum([load(path, weights_only=False) for path in paths], [])
 
-dataset = MoveDataset(trans)
+dataset = TranDataset(trans)
 dataloader = DataLoader(
     dataset,
     batch_size=batch_size,

@@ -3,6 +3,7 @@ from numpy.typing import ArrayLike
 from torch import Tensor
 
 N_CHANNELS = 8
+AUX_SIZE = 3
 FIELD_SIZE = 17
 
 BOMB = "BOMB"
@@ -38,7 +39,10 @@ Player = NamedTuple(
 Bomb = NamedTuple(
     "Bomb",
     [
-        ("pos", Position),
+        (
+            "pos",
+            Position,
+        ),
         (
             "ticks_left",
             int,
@@ -64,6 +68,15 @@ State = NamedTuple(
 Reward = NewType("Reward", int)
 Action = NewType("Action", int)
 
+Aux = NamedTuple(
+    "Aux",
+    [
+        ("has_bomb", bool),
+        ("score", int),
+        ("step", int),
+    ],
+)
+
 Transition = NamedTuple(
     "Transition",
     [
@@ -72,10 +85,13 @@ Transition = NamedTuple(
             Tensor,
         ),
         (
-            "bomb",
-            bool,
+            "aux",
+            Aux | Tensor,
         ),
-        ("action", Action),
+        (
+            "action",
+            Action,
+        ),
         (
             "reward",
             Reward,

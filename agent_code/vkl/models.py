@@ -66,11 +66,10 @@ class MyBelovedCNN(Module):
             LazyLinear(len(T.ACTIONS)),
         )
 
-    def forward(self, map, bomb):
-        # coords = map[:, -2:, :, :]
+    def forward(self, map, aux):
         x = skipper(map, map, self.conv_list)
         x = torch.flatten(x, start_dim=1)
-        x = torch.cat((x, bomb.reshape(-1, 1)), dim=1)
+        x = torch.cat((x, aux), dim=1)
         x = self.fc(x)
 
         return softmax(x, dim=1)
@@ -91,8 +90,8 @@ class Lighter(L.LightningModule):
         self.total_steps = total_steps
 
     def training_step(self, batch, batch_idx):
-        map, bomb, action = batch
-        out = self.model(map, bomb)
+        map, aux, action = batch
+        out = self.model(map, aux)
         action = action
         loss = cross_entropy(out, action)
 

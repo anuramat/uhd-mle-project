@@ -45,3 +45,8 @@ def get_map(s: T.State | dict) -> Tensor:
             y_coord,
         ]
     ).to(dtype=float32)
+
+
+def get_aux(s: T.State | dict) -> T.Aux:
+    s = T.parse_state(s)
+    return T.Aux(has_bomb=s.self.has_bomb, score=s.self.score, step=s.step)
