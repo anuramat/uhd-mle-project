@@ -65,7 +65,6 @@ State = NamedTuple(
 )
 
 
-Reward = NewType("Reward", int)
 Action = NewType("Action", int)
 
 Aux = NamedTuple(
@@ -94,7 +93,7 @@ Transition = NamedTuple(
         ),
         (
             "reward",
-            Reward,
+            int,
         ),
     ],
 )
