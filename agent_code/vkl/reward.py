@@ -8,7 +8,12 @@ def rew2ret(trans: list[T.Transition], discount=0.9) -> list[T.Transition]:
     for i in reversed(range(len(returns) - 1)):
         returns[i] += discount * returns[i + 1]
 
-    return trans
+    ret_trans = [
+        T.Transition(map=t.map, aux=t.aux, action=t.action, reward=returns[i])
+        for i, t in enumerate(trans)
+    ]
+
+    return ret_trans
 
 
 __table = defaultdict(

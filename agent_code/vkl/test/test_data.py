@@ -8,7 +8,9 @@ batch_size = 2
 
 class TestDataset:
     def test_basic(self):
-        input = load("agent_code/watcher/output/trans_0.pt", weights_only=False)
+        input: list[T.Transition] = load(
+            "agent_code/watcher/output/trans_0.pt", weights_only=False
+        )
         dataset = TranDataset(input)
         dataloader = DataLoader(dataset, batch_size=batch_size)
         batch = next(iter(dataloader))
