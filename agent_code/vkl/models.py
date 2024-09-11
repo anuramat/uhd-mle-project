@@ -12,7 +12,7 @@ from torch.nn import (
 )
 from torch.nn.functional import mse_loss
 from torch.optim.lr_scheduler import OneCycleLR
-from torch.optim.adam import Adam
+from torch.optim.adamw import AdamW
 import agent_code.vkl.typing as T
 import pytorch_lightning as L
 
@@ -104,7 +104,7 @@ class Lighter(L.LightningModule):
         return loss
 
     def configure_optimizers(self):  # pyright:ignore
-        optimizer = Adam(self.parameters(), lr=self.lr)
+        optimizer = AdamW(self.parameters(), lr=self.lr)
         scheduler = OneCycleLR(
             optimizer=optimizer, max_lr=self.lr, total_steps=self.total_steps
         )
