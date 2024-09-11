@@ -1,5 +1,6 @@
 def setup_training(self):
-    pass
+    assert self.model is not None
+    self.training = True
 
 
 def game_events_occurred(self, state, action, new_state, events):

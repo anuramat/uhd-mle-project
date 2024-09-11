@@ -65,8 +65,6 @@ State = NamedTuple(
 )
 
 
-Action = NewType("Action", int)
-
 Aux = NamedTuple(
     "Aux",
     [
@@ -89,7 +87,7 @@ Transition = NamedTuple(
         ),
         (
             "action",
-            Action,
+            int,
         ),
         (
             "reward",
@@ -115,7 +113,7 @@ def parse_state(s: dict | State) -> State:
     return s
 
 
-def action_i2s(i: Action) -> str:
+def action_i2s(i: int) -> str:
     return ACTIONS[i]
 
 
@@ -124,5 +122,5 @@ for i, v in enumerate(ACTIONS):
     __action_str2int_dict[v] = i
 
 
-def action_s2i(s: str) -> Action:
-    return Action(__action_str2int_dict[s])
+def action_s2i(s: str):
+    return __action_str2int_dict[s]
