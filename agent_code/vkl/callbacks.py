@@ -1,20 +1,22 @@
-from torch import load, tensor, Tensor
+from torch import float32, load, tensor, Tensor
 import agent_code.vkl.typing as T
-from agent_code.vkl.preprocessing import get_map
+from agent_code.vkl.preprocessing import get_aux, get_map
+from os.path import join
 
 
 def setup(self):
-    self.model = load("output/model.pt").eval()
+    self.model = load("model.pt", weights_only=False).eval()
     self.training = False
 
 
 def act(self, s: dict | T.State):
     s = T.parse_state(s)
     map = get_map(s).unsqueeze(0)
+    aux = tensor(get_aux(s), dtype=float32).unsqueeze(
+        0
+    )  # TODO maybe move torch() to get_aux
 
-    proba = self.model(
-        map.float(), tensor(s.self.has_bomb).float().unsqueeze(0)
-    ).flatten()
+    proba = self.model(map, aux).flatten()
 
     if not self.training:
         proba = filter_proba(proba, s, map)
@@ -46,4 +48,8 @@ def filter_proba(proba: Tensor, s: T.State, map: Tensor) -> Tensor:
 
 
 def illegal_cell(map: Tensor, x: int, y: int) -> bool:
-    return round(float(map[0, 0, x, y])) != T.FREE or round(float(map[0, 2, x, y])) != 0
+    return (
+        round(float(map[0, 0, x, y])) != T.FREE
+        or round(float(map[0, 2, x, y])) != 0  # bomb
+        or round(float(map[0, 4, x, y])) != 0  # player
+    )

@@ -2,19 +2,18 @@ from agent_code.vkl.data import pack_tran
 from agent_code.vkl.reward import rew2ret
 from torch import save
 from os import environ
-import agent_code.vkl.typing as T
-import events as e
 
 __copy_counter = 0
 
 
 def setup_training(self):
-    # HACK we want to save data from multiple copies of an agent
+    self.training = True
+    # we want to save data from multiple copies of an agent
     global __copy_counter
     self.agent_id = __copy_counter
     __copy_counter += 1
 
-    # HACK so that we know when to do the final checkpoint
+    # so that we know when to do the final checkpoint
     self.n_games = int(environ["N_GAMES"])
 
     self.games_played = 0  # for checkpointing
