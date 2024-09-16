@@ -6,6 +6,10 @@ import os
 model = based
 if os.environ["MODEL"] == "vkl":
     model = vkl
+elif os.environ["MODEL"] == "rule_based_agent":
+    model = based
+else:
+    raise ValueError("$MODEL was not set in the ./datagen.sh script")
 
 
 def setup(self):
