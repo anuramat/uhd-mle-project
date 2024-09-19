@@ -7,7 +7,7 @@ from random import choice, random
 
 
 def setup(self):
-    path = join(environ["PWD"], environ["MODEL_FILE"])
+    path = join(environ["PWD"], environ["MODEL"])
     self.model = load(path, weights_only=False).eval()
     self.training = False
 
