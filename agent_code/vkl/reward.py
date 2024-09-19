@@ -24,6 +24,7 @@ __table = defaultdict(
         e.COIN_COLLECTED: 5,
         e.KILLED_OPPONENT: 20,
         e.GOT_KILLED: -100,
+        e.KILLED_SELF: -200,
         # idk
         e.OPPONENT_ELIMINATED: 0,
         e.SURVIVED_ROUND: 0,

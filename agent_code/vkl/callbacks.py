@@ -3,6 +3,7 @@ import agent_code.vkl.typing as T
 from agent_code.vkl.preprocessing import get_aux, get_map
 from os.path import join
 from os import environ
+from random import choice, random
 
 
 def setup(self):
@@ -14,38 +15,54 @@ def setup(self):
 def act(self, s: dict | T.State):
     s = T.parse_state(s)
     map = get_map(s).unsqueeze(0)
+
+    if self.training:
+        if random() < self.epsilon:
+            return random_move(s, map)
+
     aux = tensor(get_aux(s), dtype=float32).unsqueeze(
         0
     )  # TODO maybe move torch() to get_aux
 
-    proba = self.model(map, aux).flatten()
+    # do the heavy lifting
+    q = self.model(map, aux).flatten()
 
+    # some stats
     if not self.training:
-        proba = filter_proba(proba, s, map)
+        pretty_q = {T.ACTIONS[i]: round(float(q[i]), 5) for i in range(len(T.ACTIONS))}
+        print(pretty_q)
 
-    p = {T.ACTIONS[i]: round(float(proba[i]), 5) for i in range(len(T.ACTIONS))}
+    # remove illegal moves
+    q = filter_proba(q, s, map)
 
-    if not self.training:
-        print(p)
-
-    action = T.action_i2s(int(proba.argmax()))
+    action = T.action_i2s(int(q.argmax()))
 
     return action
 
 
+def random_move(s: T.State, map: Tensor) -> str:
+    proba = tensor([1] * len(T.ACTIONS))
+    proba = filter_proba(proba, s, map, replacement=0)
+    allowed_actions = [T.action_i2s(int(i)) for i in proba.nonzero().flatten()]
+    action = choice(allowed_actions)
+    return action
+
+
 # remove illegal moves
-def filter_proba(proba: Tensor, s: T.State, map: Tensor) -> Tensor:
+def filter_proba(
+    proba: Tensor, s: T.State, map: Tensor, replacement=float("-inf")
+) -> Tensor:
     if not s.self.has_bomb:
-        proba[T.action_s2i(T.BOMB)] = float("-inf")
+        proba[T.action_s2i(T.BOMB)] = replacement
     x, y = s.self.pos
     if illegal_cell(map, x - 1, y):
-        proba[T.action_s2i(T.LEFT)] = float("-inf")
+        proba[T.action_s2i(T.LEFT)] = replacement
     if illegal_cell(map, x + 1, y):
-        proba[T.action_s2i(T.RIGHT)] = float("-inf")
+        proba[T.action_s2i(T.RIGHT)] = replacement
     if illegal_cell(map, x, y - 1):
-        proba[T.action_s2i(T.UP)] = float("-inf")
+        proba[T.action_s2i(T.UP)] = replacement
     if illegal_cell(map, x, y + 1):
-        proba[T.action_s2i(T.DOWN)] = float("-inf")
+        proba[T.action_s2i(T.DOWN)] = replacement
     return proba
 
 

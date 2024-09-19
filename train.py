@@ -3,7 +3,6 @@
 
 import argparse
 from agent_code.vkl.data import TranDataset
-from gc import collect
 from os import listdir, cpu_count
 from os.path import exists, join
 from re import search
@@ -45,7 +44,6 @@ dataloader = DataLoader(
     persistent_workers=True,
 )
 del trans
-collect()
 
 # raw model
 raw_model = None
