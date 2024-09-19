@@ -116,4 +116,3 @@ results/
 *.pt
 /lightning_logs/
 *.ipynb
-/rule_based_agent
