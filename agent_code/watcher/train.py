@@ -4,19 +4,19 @@ from torch import save
 from os import environ
 
 __copy_counter = 0
+__time_to_save = False
 
 
 def setup_training(self):
     self.training = True
+    self.crash_on_next_episode = False
     # we want to save data from multiple copies of an agent
     global __copy_counter
     self.agent_id = __copy_counter
     __copy_counter += 1
 
     # so that we know when to do the final checkpoint
-    self.n_games = int(environ["N_GAMES"])
-
-    self.games_played = 0  # for checkpointing
+    self.n_trans = int(environ["N_TRANS"])
 
     # buffer for the current game
     self.trans = []
@@ -35,6 +35,13 @@ def game_events_occurred(
 def end_of_round(self, state, action, events):
     self.output += rew2ret(self.trans)
     self.trans = []
-    self.games_played += 1
-    if self.games_played == self.n_games:
+
+    if self.crash_on_next_episode:
+        raise KeyboardInterrupt("hehe")
+
+    global __time_to_save
+    if len(self.output) > self.n_trans:
+        __time_to_save = True
+    if __time_to_save:
         save(self.output, f"output/{self.source_name}_{self.agent_id}.pt")
+        self.crash_on_next_episode = True
