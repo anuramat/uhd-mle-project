@@ -17,19 +17,18 @@ import torch
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--n-epochs", type=int, required=True)
-parser.add_argument("--source-model", type=str)
+parser.add_argument("--source-model", type=str, default="source_model.pt")
 parser.add_argument("--n-workers", type=int, default=cpu_count())
-parser.add_argument("--batch-size", type=int, default=1024)
+parser.add_argument("--batch-size", type=int, default=5120)
 args = parser.parse_args()
 
 # parameters
 torch.set_float32_matmul_precision("medium")
 precision = "16-mixed"
-source_model = "source_model.pt"
 result_model_path = "result_model.pt"
 trans_dir = "agent_code/watcher/data/"
 
-# ./datagen.sh 1024
+# data
 trans_filenames = [f for f in listdir(trans_dir) if search(r".*\.pt", f)]
 print("dataset filenames:", trans_filenames)
 paths = [join(trans_dir, f) for f in trans_filenames]
@@ -47,7 +46,7 @@ del trans
 
 # raw model
 raw_model = None
-if args.source_model:
+if args.source_model not in ("none"):
     if not exists(args.source_model):
         raise FileNotFoundError("Source model file doesn't exist")
     print("Loading existing model")
