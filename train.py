@@ -41,6 +41,7 @@ dataloader = DataLoader(
     num_workers=args.n_workers,
     pin_memory=True,
     persistent_workers=True,
+    drop_last=True,
 )
 del trans
 
