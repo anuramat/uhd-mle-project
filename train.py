@@ -27,7 +27,7 @@ torch.set_float32_matmul_precision("medium")
 precision = "16-mixed"
 source_model = "source_model.pt"
 result_model_path = "result_model.pt"
-trans_dir = "agent_code/watcher/output/"
+trans_dir = "agent_code/watcher/data/"
 
 # ./datagen.sh 1024
 trans_filenames = [f for f in listdir(trans_dir) if search(r".*\.pt", f)]

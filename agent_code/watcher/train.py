@@ -44,5 +44,5 @@ def end_of_round(self, state, action, events):
     if len(self.output) > self.n_trans:
         __time_to_save = True
     if __time_to_save:
-        save(self.output, f"output/{self.source_name}_{self.agent_id}.pt")
+        save(self.output, f"data/{self.source_name}_{self.agent_id}.pt")
         self.quit_on_next_episode = True
