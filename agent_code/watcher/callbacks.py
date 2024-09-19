@@ -1,10 +1,10 @@
 import agent_code.rule_based_agent.callbacks as based
 import agent_code.vkl.callbacks as vkl
 import agent_code.vkl.typing as T
-import os
+from os import environ
 
 model = based
-model_name = os.environ["MODEL"]
+model_name = environ["MODEL"]
 if model_name == "vkl":
     model = vkl
 elif model_name == "rule_based_agent":

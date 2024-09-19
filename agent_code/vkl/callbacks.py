@@ -6,7 +6,7 @@ from os import environ
 
 
 def setup(self):
-    path = join(environ["PWD"], "source_model.pt")
+    path = join(environ["PWD"], environ["MODEL_FILE"])
     self.model = load(path, weights_only=False).eval()
     self.training = False
 
