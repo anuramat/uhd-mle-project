@@ -30,7 +30,7 @@ trans_dir = "agent_code/watcher/data/"
 
 # data
 trans_filenames = [f for f in listdir(trans_dir) if search(r".*\.pt", f)]
-print("dataset filenames:", trans_filenames)
+print(f"{len(trans_filenames)} data files loaded.")
 paths = [join(trans_dir, f) for f in trans_filenames]
 trans = sum([load(path, weights_only=False) for path in paths], [])
 dataset = TranDataset(trans)
@@ -50,7 +50,7 @@ if args.source_model not in ("none"):
     if not exists(args.source_model):
         raise FileNotFoundError("Source model file doesn't exist")
     print("Loading existing model")
-    raw_model = load(args.source_model)
+    raw_model = load(args.source_model, weights_only=False)
 else:
     print("Starting training from scratch")
     raw_model = models.MyBelovedCNN()

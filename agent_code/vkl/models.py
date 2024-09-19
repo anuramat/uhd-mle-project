@@ -99,7 +99,7 @@ class Lighter(L.LightningModule):
         preds = preds_raw[arange(n), action]
         loss = mse_loss(preds, reward)
 
-        self.log("train_loss", loss)
+        self.log("train_loss", int(loss))
         self.log("lr", self.lr_schedulers().get_last_lr()[0])  # pyright:ignore
         return loss
 

@@ -1,4 +1,4 @@
-from torch import float32, load, tensor, Tensor
+from torch import float32, load, tensor, Tensor, no_grad
 import agent_code.vkl.typing as T
 from agent_code.vkl.preprocessing import get_aux, get_map
 from os.path import join
@@ -9,7 +9,6 @@ from random import choice, random
 def setup(self):
     path = join(environ["PWD"], environ["MODEL"])
     self.model = load(path, weights_only=False).eval()
-    self.training = False
 
 
 def act(self, s: dict | T.State):
@@ -25,7 +24,8 @@ def act(self, s: dict | T.State):
     )  # TODO maybe move torch() to get_aux
 
     # do the heavy lifting
-    q = self.model(map, aux).flatten()
+    with no_grad():
+        q = self.model(map, aux).flatten()
 
     # some stats
     if not self.training:
