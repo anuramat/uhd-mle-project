@@ -31,7 +31,8 @@ result_model_path = "result_model.pt"
 trans_dir = "agent_code/watcher/output/"
 
 # ./datagen.sh 1024
-trans_filenames = [f for f in listdir(trans_dir) if search(r"trans.*\.pt", f)]
+trans_filenames = [f for f in listdir(trans_dir) if search(r".*\.pt", f)]
+print("dataset filenames:", trans_filenames)
 paths = [join(trans_dir, f) for f in trans_filenames]
 trans = sum([load(path, weights_only=False) for path in paths], [])
 dataset = TranDataset(trans)

@@ -37,4 +37,4 @@ def end_of_round(self, state, action, events):
     self.trans = []
     self.games_played += 1
     if self.games_played == self.n_games:
-        save(self.output, f"output/trans_{self.agent_id}.pt")
+        save(self.output, f"output/{self.source_name}_{self.agent_id}.pt")

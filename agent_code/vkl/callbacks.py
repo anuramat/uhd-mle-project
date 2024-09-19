@@ -2,10 +2,12 @@ from torch import float32, load, tensor, Tensor
 import agent_code.vkl.typing as T
 from agent_code.vkl.preprocessing import get_aux, get_map
 from os.path import join
+from os import environ
 
 
 def setup(self):
-    self.model = load("model.pt", weights_only=False).eval()
+    path = join(environ["PWD"], "source_model.pt")
+    self.model = load(path, weights_only=False).eval()
     self.training = False
 
 

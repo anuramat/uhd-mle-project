@@ -4,16 +4,18 @@ import agent_code.vkl.typing as T
 import os
 
 model = based
-if os.environ["MODEL"] == "vkl":
+model_name = os.environ["MODEL"]
+if model_name == "vkl":
     model = vkl
-elif os.environ["MODEL"] == "rule_based_agent":
+elif model_name == "rule_based_agent":
     model = based
 else:
-    raise ValueError("$MODEL was not set in the ./datagen.sh script")
+    raise ValueError(f"Illegal $MODEL={model_name} set in the ./datagen.sh script")
 
 
 def setup(self):
     model.setup(self)
+    self.source_name = model_name
 
 
 def act(self, game_state: dict) -> str:
