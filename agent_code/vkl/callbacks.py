@@ -9,9 +9,8 @@ from random import choice, random
 def setup(self):
     self.training = False
     path = join(environ["PWD"], environ["MODEL"])
-    self.model = load(path, weights_only=False).eval()
-    if environ.get("VKL_CUDA"):
-        self.model = self.model.to("cuda")
+    self.device = "cuda" if environ.get("CUDA") else "cpu"
+    self.model = load(path, weights_only=False).eval().to(self.device)
 
 
 def act(self, s: dict | T.State):
@@ -22,13 +21,11 @@ def act(self, s: dict | T.State):
         if random() < self.epsilon:
             return random_move(s, map)
 
-    aux = tensor(get_aux(s), dtype=float32).unsqueeze(
-        0
-    )  # TODO maybe move torch() to get_aux
+    aux = tensor(get_aux(s), dtype=float32).unsqueeze(0)
 
     # do the heavy lifting
     with no_grad():
-        q = self.model(map, aux).flatten()
+        q = self.model(map.to(self.device), aux.to(self.device)).flatten().to("cpu")
 
     # some stats
     if not self.training:
@@ -39,7 +36,6 @@ def act(self, s: dict | T.State):
     q = filter_proba(q, s, map)
 
     action = T.action_i2s(int(q.argmax()))
-
     return action
 
 

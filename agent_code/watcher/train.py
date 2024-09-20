@@ -38,7 +38,7 @@ def end_of_round(self, state, action, events):
     self.trans = []
 
     if self.quit_on_next_episode:
-        raise KeyboardInterrupt("hehe")
+        raise Exception("Data generation finished.")
 
     global __time_to_save
     if len(self.output) > self.n_trans:
