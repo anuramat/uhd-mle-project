@@ -30,7 +30,7 @@ trans_dir = "agent_code/watcher/data/"
 
 # data
 trans_filenames = [f for f in listdir(trans_dir) if search(r".*\.pt", f)]
-print(f"{len(trans_filenames)} data files found.")
+print(f"{len(trans_filenames)} data files found: \n\t {', '.join(trans_filenames)}")
 paths = [join(trans_dir, f) for f in trans_filenames]
 print("Loading files...")
 trans = sum([load(path, weights_only=False) for path in paths], [])
