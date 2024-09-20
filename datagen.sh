@@ -5,7 +5,7 @@
 
 usage='
 Usage:
-	./datagen.sh $MODEL $N_TRANS
+	./datagen.sh $MODEL $N_TRANS/1024
 
 $MODEL is either "rule_based_agent" or a vkl model filename.'
 [ -z "$1" ] && echo "$usage" && exit
