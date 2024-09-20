@@ -42,7 +42,7 @@ dataloader = DataLoader(
     shuffle=True,
     num_workers=args.n_workers,
     pin_memory=True,
-    persistent_workers=True,
+    # persistent_workers=True, # WARN causes a memory leak
     drop_last=True,
 )
 del trans
