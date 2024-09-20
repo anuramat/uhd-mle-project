@@ -38,7 +38,8 @@ def end_of_round(self, state, action, events):
     self.trans = []
 
     if self.quit_on_next_episode:
-        raise Exception("Data generation finished.")
+        print("Data generation done.")
+        raise SystemExit(0)
 
     global __time_to_save
     if len(self.output) > self.n_trans:
