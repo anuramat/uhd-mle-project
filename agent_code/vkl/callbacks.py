@@ -7,8 +7,11 @@ from random import choice, random
 
 
 def setup(self):
+    self.training = False
     path = join(environ["PWD"], environ["MODEL"])
     self.model = load(path, weights_only=False).eval()
+    if environ.get("VKL_CUDA"):
+        self.model = self.model.to("cuda")
 
 
 def act(self, s: dict | T.State):

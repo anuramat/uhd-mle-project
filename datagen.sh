@@ -12,5 +12,5 @@ $MODEL is either "rule_based_agent" or a vkl model filename.'
 [ -z "$2" ] && echo "$usage" && exit
 export MODEL=$1 # is being read by the script internally
 export N_TRANS=$(($2 * 1024))
-
+# export CUDA='yep'
 python main.py play --agents watcher watcher watcher watcher --train 4 --no-gui --n-rounds "$N_TRANS"
