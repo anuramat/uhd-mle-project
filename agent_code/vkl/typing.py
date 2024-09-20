@@ -1,4 +1,4 @@
-from typing import NamedTuple, NewType
+from typing import NamedTuple
 from numpy.typing import ArrayLike
 from torch import Tensor
 

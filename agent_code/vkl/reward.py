@@ -19,15 +19,13 @@ def rew2ret(trans: list[T.Transition], discount=0.9) -> list[T.Transition]:
 __table = defaultdict(
     int,
     {
-        e.INVALID_ACTION: -10,
         e.CRATE_DESTROYED: 1,
         e.COIN_COLLECTED: 5,
         e.KILLED_OPPONENT: 20,
         e.GOT_KILLED: -100,
         e.KILLED_SELF: -200,
-        # idk
+        # in the future might help with very complex behaviour, eg alliancing
         e.OPPONENT_ELIMINATED: 0,
-        e.SURVIVED_ROUND: 0,
     },
 )
 
