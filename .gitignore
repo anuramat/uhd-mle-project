@@ -116,3 +116,4 @@ results/
 *.pt
 /lightning_logs/
 *.ipynb
+/temp*.sh
