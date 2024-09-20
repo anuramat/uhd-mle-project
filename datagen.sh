@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-# 1*1024 ~= 34M over 4 files
-# 200*1024 ~= 7.1G over 4 files
+# 1000*1024 ~= 4 files, 10G each
 
 usage='
 Usage:
