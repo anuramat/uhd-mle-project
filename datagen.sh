@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 # 1000*1024 ~= 4 files, 10G each
+# thus 40G total
+# which during training takes about 2x, so 80G
+# which is close to 100%
 
 usage='
 Usage:
