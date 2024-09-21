@@ -40,7 +40,7 @@ def get_map(s: T.State | dict) -> Tensor:
             bombs,
             coins,
             player_bomb,
-            player_score,
+            player_score,  # I think this is always zero lmao
             x_coord,
             y_coord,
         ]
