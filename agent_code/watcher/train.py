@@ -19,11 +19,12 @@ def setup_training(self):
     # so that we know when to do the final checkpoint
     self.n_trans = int(environ["N_TRANS"])
 
-    # buffer for the current game
+    # buffers for the current game
     self.trans = []
-    # calculate Q before dumping to output buffer
+    self.q = []
 
-    self.output = []  # total buffer
+    # all episodes
+    self.output = []
 
 
 def game_events_occurred(
@@ -34,8 +35,11 @@ def game_events_occurred(
 
 
 def end_of_round(self, state, action, events):
-    self.output += rew2ret(self.trans)
+    if self.model is not None:
+        self.q.append(0)
+    self.output += rew2ret(self.trans, self.q)
     self.trans = []
+    self.q = []
 
     if self.quit_on_next_episode:
         print("Data generation done.")

@@ -35,6 +35,9 @@ def act(self, s: dict | T.State):
     # remove illegal moves
     q = filter_proba(q, s, map)
 
+    if self.q is not None:
+        self.q.append(q.max())
+
     action = T.action_i2s(int(q.argmax()))
     return action
 

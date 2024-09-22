@@ -22,6 +22,8 @@ out=out.pt
 model="$in"
 [ "$1" = 0 ] && model=none
 
+# TODO separate bootstrap script from dqn (maybe)
+
 while true; do
 	[ "$i" != 0 ] && model=source_model.pt
 	echo "~~~~~~~~~~~~~~~~~ Generation $i ~~~~~~~~~~~~~~~~~~~~~~"
