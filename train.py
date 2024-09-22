@@ -63,6 +63,7 @@ else:
 total_steps = args.n_epochs * len(dataloader)
 
 # lightning
+raw_model.train()
 model = models.Lighter(raw_model, total_steps=total_steps)
 trainer = L.Trainer(accelerator="gpu", max_epochs=args.n_epochs, precision=precision)
 # # TODO figure out how to make tuner ignore the scheduler
