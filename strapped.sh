@@ -8,8 +8,8 @@ usage='
 Usage:
 	./strapped.sh $START_GEN'
 [ -z "$1" ] && echo "$usage" && exit
-source_episodes=200 # about 8G
-epochs=64
+source_episodes=400 # about 8G
+epochs=32
 i="$1"
 while true; do
 	echo "~~~~~~~~~~~~~~~~~ Generation $i ~~~~~~~~~~~~~~~~~~~~~~"
