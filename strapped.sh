@@ -25,15 +25,16 @@ model="$in"
 # TODO separate bootstrap script from dqn (maybe)
 
 while true; do
-	[ "$i" != 0 ] && model=source_model.pt
+	[ "$i" != 0 ] && model="$in"
 	echo "~~~~~~~~~~~~~~~~~ Generation $i ~~~~~~~~~~~~~~~~~~~~~~"
 	# generate data
 	first_iteration="false"
 	[ "$1" = "$i" ] && first_iteration="true"
 	[ "$first_iteration" = "false" ] || [ "$skip_first_datagen" = "false" ] && {
-		[ "$model" != "none" ] && ./datagen.sh source_model.pt 400
-		./datagen.sh rule_based_agent 200
-		./datagen.sh rule_based_agent 200 coin-heaven
+		[ "$model" != "none" ] && ./datagen.sh "$in" 100
+		[ "$model" != "none" ] && ./datagen.sh "$in" 20 coin-heaven
+		# ./datagen.sh rule_based_agent 200
+		# ./datagen.sh rule_based_agent 200 coin-heaven
 	}
 	# start training (start from scratch on zeroth gen)
 	./train.py --n-epochs 4 --input "$model" --output "$out"

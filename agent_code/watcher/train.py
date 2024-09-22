@@ -35,7 +35,7 @@ def game_events_occurred(
 
 
 def end_of_round(self, state, action, events):
-    if self.model is not None:
+    if len(self.q) != 0:
         self.q.append(0)
     self.output += rew2ret(self.trans, self.q)
     self.trans = []

@@ -11,16 +11,13 @@ def setup(self):
     path = join(environ["PWD"], environ["MODEL"])
     self.device = "cuda" if environ.get("CUDA") else "cpu"
     self.model = load(path, weights_only=False).eval().to(self.device)
+    self.q = []
 
 
 def act(self, s: dict | T.State):
+    # prepare shit
     s = T.parse_state(s)
     map = get_map(s).unsqueeze(0)
-
-    if self.training:
-        if random() < self.epsilon:
-            return random_move(s, map)
-
     aux = tensor(get_aux(s), dtype=float32).unsqueeze(0)
 
     # do the heavy lifting
@@ -35,9 +32,16 @@ def act(self, s: dict | T.State):
     # remove illegal moves
     q = filter_proba(q, s, map)
 
-    if self.q is not None:
+    # write Q
+    if self.training:
         self.q.append(q.max())
 
+    # epsilon
+    if self.training:
+        if random() < self.epsilon:
+            return random_move(s, map)
+
+    # act
     action = T.action_i2s(int(q.argmax()))
     return action
 
