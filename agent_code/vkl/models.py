@@ -70,7 +70,7 @@ class MyBelovedCNN(Module):
             LazyLinear(256),
             ReLU(),
             LazyBatchNorm1d(),
-            Dropout(0.5)
+            Dropout(0.5),
             LazyLinear(128),
             ReLU(),
             LazyBatchNorm1d(),
