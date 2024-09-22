@@ -12,6 +12,7 @@ if model_name == "rule_based_agent":
 def setup(self):
     model.setup(self)
     self.source_name = model_name
+    self.scenario_name = environ["SCENARIO_NAME"]
 
 
 def act(self, game_state: dict) -> str:

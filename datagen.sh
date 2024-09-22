@@ -7,12 +7,20 @@
 
 usage='
 Usage:
-	./datagen.sh $MODEL $N_TRANS/1024
+	./datagen.sh $MODEL $N_TRANS/1024 [$SCENARIO_NAME]
 
-$MODEL is either "rule_based_agent" or a vkl model filename.'
-[ -z "$1" ] && echo "$usage" && exit
-[ -z "$2" ] && echo "$usage" && exit
-export MODEL=$1 # is being read by the script internally
-export N_TRANS=$(($2 * 1024))
+$MODEL is either "rule_based_agent" or a vkl model filename.
+$SCENARIO_NAME is either "coin-heaven" or "classic"/empty.
+'
+[ -z "$1" ] || [ -z "$2" ] && echo "$usage" && exit
+
+# these are being read in the code (sorry):
 export CUDA='yep'
-python main.py play --agents watcher watcher watcher watcher --train 4 --no-gui --n-rounds "$N_TRANS"
+export MODEL=$1
+export N_TRANS=$(($2 * 1024))
+export SCENARIO_NAME=$3
+if [ -z "$SCENARIO_NAME" ]; then
+	SCENARIO_NAME="classic"
+fi
+
+python main.py play --agents watcher watcher watcher watcher --train 4 --no-gui --n-rounds "$N_TRANS" --scenario "$SCENARIO_NAME"

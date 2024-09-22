@@ -8,16 +8,28 @@ usage='
 Usage:
 	./strapped.sh $START_GEN'
 [ -z "$1" ] && echo "$usage" && exit
-source_episodes=400 # about 8G
-epochs=32
 i="$1"
+
+read -rp "skip first datagen (y/n)? " choice
+case "$choice" in
+	y) skip_first_datagen="true" ;;
+	n) skip_first_datagen="false" ;;
+	*)
+		echo "huh"
+		exit
+		;;
+esac
+
 while true; do
 	echo "~~~~~~~~~~~~~~~~~ Generation $i ~~~~~~~~~~~~~~~~~~~~~~"
 	# generate data
-	rm agent_code/watcher/data/source*.pt
-	./datagen.sh source_model.pt "$source_episodes"
+	[ "$1" != "$i" ] || [ "$skip_first_datagen" = "false" ] && {
+		./datagen.sh source_model.pt 400
+		./datagen.sh rule_based_agent 200
+		./datagen.sh rule_based_agent 200 coin-heaven
+	}
 	# start training
-	./train.py --n-epochs "$epochs"
+	./train.py --n-epochs 4
 	# backup the model
 	cp ./result_model.pt "./output/gen${i}.pt"
 	mv ./result_model.pt ./source_model.pt
