@@ -35,5 +35,5 @@ class TranDataset(Dataset):
             map=t.map,
             aux=tensor(t.aux, dtype=float32),
             action=t.action,
-            reward=tensor(t.reward, dtype=float32),
+            reward=t.reward,
         )

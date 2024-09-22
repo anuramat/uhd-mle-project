@@ -1,4 +1,5 @@
 import events as e
+from torch import Tensor, tensor, float32
 from collections import defaultdict
 import agent_code.vkl.typing as T
 
@@ -39,7 +40,7 @@ def _rew2ret_dqn(
 
 
 __table = defaultdict(
-    int,
+    float,
     {
         e.CRATE_DESTROYED: 1,
         e.COIN_COLLECTED: 5,
@@ -52,7 +53,7 @@ __table = defaultdict(
 )
 
 
-def get_reward(old: dict | T.State, new: dict | T.State, events: list[str]) -> int:
+def get_reward(old: dict | T.State, new: dict | T.State, events: list[str]) -> Tensor:
     old = T.parse_state(old)
     new = T.parse_state(new)
 
@@ -62,4 +63,4 @@ def get_reward(old: dict | T.State, new: dict | T.State, events: list[str]) -> i
         if event in events:
             total += reward
 
-    return total
+    return tensor(total, dtype=float32)

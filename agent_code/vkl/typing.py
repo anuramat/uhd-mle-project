@@ -91,7 +91,7 @@ Transition = NamedTuple(
         ),
         (
             "reward",
-            int | float | Tensor,
+            Tensor,
         ),
     ],
 )
