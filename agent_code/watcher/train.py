@@ -19,6 +19,8 @@ def setup_training(self):
     # so that we know when to do the final checkpoint
     self.n_trans = int(environ["N_TRANS"])
 
+    self.shadow = True if environ.get("SHADOW") else False
+
     # buffers for the current game
     self.trans = []
     self.q = []

@@ -19,29 +19,31 @@ esac
 
 in=in.pt
 out=out.pt
-model="$in"
-[ "$1" = 0 ] && model=none
 
 # TODO separate bootstrap script from dqn (maybe)
 
 while true; do
-	[ "$i" != 0 ] && model="$in"
 	echo "~~~~~~~~~~~~~~~~~ Generation $i ~~~~~~~~~~~~~~~~~~~~~~"
+
 	# generate data
+	# unless we already did
 	first_iteration="false"
 	[ "$1" = "$i" ] && first_iteration="true"
 	[ "$first_iteration" = "false" ] || [ "$skip_first_datagen" = "false" ] && {
-		[ "$model" != "none" ] && ./datagen.sh "$in" 100
-		[ "$model" != "none" ] && ./datagen.sh "$in" 20 coin-heaven
-		# ./datagen.sh rule_based_agent 200
-		# ./datagen.sh rule_based_agent 200 coin-heaven
+
+		./datagen.sh "$in" 100            # 7 minutes
+		./datagen.sh "$in" 20 coin-heaven # 2 min
+		SHADOW=1 ./datagen.sh "$in" 100
+		SHADOW=1 ./datagen.sh "$in" 20 coin-heaven
+
 	}
-	# start training (start from scratch on zeroth gen)
-	./train.py --n-epochs 4 --input "$model" --output "$out"
-	model="$in"
+
+	./train.py --n-epochs 4 --input "$in" --output "$out"
+
 	# backup the model
 	cp "$out" "./output/gen${i}.pt"
 	mv "$out" "$in"
+
 	echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 	((i++))
 done

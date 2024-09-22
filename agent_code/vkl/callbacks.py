@@ -1,12 +1,19 @@
-from torch import float32, load, tensor, Tensor, no_grad
-import agent_code.vkl.typing as T
+from types import SimpleNamespace
 from agent_code.vkl.preprocessing import get_aux, get_map
-from os.path import join
 from os import environ
+from os.path import join
 from random import choice, random
+from torch import float32, load, tensor, Tensor, no_grad
+import agent_code.rule_based_agent.callbacks as based
+import agent_code.vkl.typing as T
 
 
 def setup(self):
+    # based
+    self.shadow = False
+    self.fake = SimpleNamespace()
+    based.setup(self.fake)
+
     self.training = False
     path = join(environ["PWD"], environ["MODEL"])
     self.device = "cuda" if environ.get("CUDA") else "cpu"
@@ -14,9 +21,9 @@ def setup(self):
     self.q = []
 
 
-def act(self, s: dict | T.State):
+def act(self, state: dict | T.State):
     # prepare shit
-    s = T.parse_state(s)
+    s = T.parse_state(state)
     map = get_map(s).unsqueeze(0)
     aux = tensor(get_aux(s), dtype=float32).unsqueeze(0)
 
@@ -42,6 +49,9 @@ def act(self, s: dict | T.State):
             return random_move(s, map)
 
     # act
+    if self.shadow:
+        return based.act(self.fake, state)
+
     action = T.action_i2s(int(q.argmax()))
     return action
 

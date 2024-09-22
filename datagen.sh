@@ -5,6 +5,8 @@
 # which during training takes about 2x, so 80G
 # which is close to 100%
 
+# TODO add SHADOW=...
+
 usage='
 Usage:
 	./datagen.sh $MODEL $N_TRANS/1024 [$SCENARIO_NAME]
