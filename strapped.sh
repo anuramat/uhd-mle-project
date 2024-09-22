@@ -14,25 +14,31 @@ read -rp "skip first datagen (y/n)? " choice
 case "$choice" in
 	y) skip_first_datagen="true" ;;
 	n) skip_first_datagen="false" ;;
-	*)
-		echo "huh"
-		exit
-		;;
+	*) ;;
 esac
 
+in=in.pt
+out=out.pt
+model="$in"
+[ "$1" = 0 ] && model=none
+
 while true; do
+	[ "$i" != 0 ] && model=source_model.pt
 	echo "~~~~~~~~~~~~~~~~~ Generation $i ~~~~~~~~~~~~~~~~~~~~~~"
 	# generate data
-	[ "$1" != "$i" ] || [ "$skip_first_datagen" = "false" ] && {
-		./datagen.sh source_model.pt 400
+	first_iteration="false"
+	[ "$1" = "$i" ] && first_iteration="true"
+	[ "$first_iteration" = "false" ] || [ "$skip_first_datagen" = "false" ] && {
+		[ "$model" != "none" ] && ./datagen.sh source_model.pt 400
 		./datagen.sh rule_based_agent 200
 		./datagen.sh rule_based_agent 200 coin-heaven
 	}
-	# start training
-	./train.py --n-epochs 4
+	# start training (start from scratch on zeroth gen)
+	./train.py --n-epochs 4 --input "$model" --output "$out"
+	model="$in"
 	# backup the model
-	cp ./result_model.pt "./output/gen${i}.pt"
-	mv ./result_model.pt ./source_model.pt
+	cp "$out" "./output/gen${i}.pt"
+	mv "$out" "$in"
 	echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 	((i++))
 done

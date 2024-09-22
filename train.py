@@ -17,7 +17,8 @@ import torch
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--n-epochs", type=int, required=True)
-parser.add_argument("--source-model", type=str, default="source_model.pt")
+parser.add_argument("--input", type=str, required=True)
+parser.add_argument("--output", type=str, required=True)
 parser.add_argument("--n-workers", type=int, default=cpu_count())
 parser.add_argument("--batch-size", type=int, default=5120)
 args = parser.parse_args()
@@ -25,7 +26,6 @@ args = parser.parse_args()
 # parameters
 torch.set_float32_matmul_precision("medium")
 precision = "16-mixed"
-result_model_path = "result_model.pt"
 trans_dir = "agent_code/watcher/data/"
 
 # data
@@ -49,11 +49,11 @@ del trans
 
 # raw model
 raw_model = None
-if args.source_model not in ("none"):
-    if not exists(args.source_model):
-        raise FileNotFoundError("Source model file doesn't exist")
+if args.input not in ("none"):
+    if not exists(args.input):
+        raise FileNotFoundError("Input model file doesn't exist")
     print("Loading existing model")
-    raw_model = load(args.source_model, weights_only=False)
+    raw_model = load(args.input, weights_only=False)
 else:
     print("Starting training from scratch")
     raw_model = models.MyBelovedCNN()
@@ -71,4 +71,4 @@ trainer = L.Trainer(accelerator="gpu", max_epochs=args.n_epochs, precision=preci
 trainer.fit(model=model, train_dataloaders=dataloader)
 
 # save the result
-save(raw_model, result_model_path)
+save(raw_model, args.output)
