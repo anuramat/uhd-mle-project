@@ -1,14 +1,16 @@
 import torch
 from torch import Tensor, arange
 from torch.nn import (
-    ReLU,
-    LazyConv2d,
-    Sequential,
-    LazyBatchNorm2d,
+    Dropout,
+    Dropout2d,
     LazyBatchNorm1d,
+    LazyBatchNorm2d,
+    LazyConv2d,
+    LazyLinear,
     Module,
     ModuleList,
-    LazyLinear,
+    ReLU,
+    Sequential,
 )
 from torch.nn.functional import mse_loss
 from torch.optim.lr_scheduler import OneCycleLR
@@ -21,6 +23,7 @@ class MyBelovedCNN(Module):
     def __init__(self):
         super().__init__()
 
+        conv_dropout_rate = 0.1
         self.conv_list = ModuleList(
             [
                 # each block should keep H, W constant, so that input can be skipcon'd
@@ -30,29 +33,35 @@ class MyBelovedCNN(Module):
                     LazyConv2d(32, 3, padding=0),
                     ReLU(),
                     LazyBatchNorm2d(),
+                    Dropout2d(conv_dropout_rate),
                     LazyConv2d(64, 3, padding=2),
                     ReLU(),
                     LazyBatchNorm2d(),
+                    Dropout2d(conv_dropout_rate),
                 ),
                 Sequential(
                     LazyConv2d(128, 3, padding=1),
                     ReLU(),
                     LazyBatchNorm2d(),
+                    Dropout2d(conv_dropout_rate),
                 ),
                 Sequential(
                     LazyConv2d(128, 3, padding=1),
                     ReLU(),
                     LazyBatchNorm2d(),
+                    Dropout2d(conv_dropout_rate),
                 ),
                 Sequential(
                     LazyConv2d(128, 3, padding=1),
                     ReLU(),
                     LazyBatchNorm2d(),
+                    Dropout2d(conv_dropout_rate),
                 ),
                 Sequential(
                     LazyConv2d(128, 3, padding=1),
                     ReLU(),
                     LazyBatchNorm2d(),
+                    Dropout2d(conv_dropout_rate),
                 ),
             ]
         )
@@ -61,9 +70,11 @@ class MyBelovedCNN(Module):
             LazyLinear(256),
             ReLU(),
             LazyBatchNorm1d(),
+            Dropout(0.5)
             LazyLinear(128),
             ReLU(),
             LazyBatchNorm1d(),
+            Dropout(0.5),
             LazyLinear(len(T.ACTIONS)),
         )
 
