@@ -34,11 +34,10 @@ while true; do
 		./datagen.sh "$in" 100            # 7 minutes
 		./datagen.sh "$in" 20 coin-heaven # 2 min
 		SHADOW=1 ./datagen.sh "$in" 100
-		SHADOW=1 ./datagen.sh "$in" 20 coin-heaven
 
 	}
 
-	./train.py --n-epochs 4 --input "$in" --output "$out"
+	./train.py --n-epochs 40 --input "$in" --output "$out"
 
 	# backup the model
 	cp "$out" "./output/gen${i}.pt"

@@ -12,6 +12,8 @@ if model_name == "rule_based_agent":
 def setup(self):
     model.setup(self)
     self.source_name = model_name
+    if self.shadow:
+        self.source_name += "_shadow"
     self.scenario_name = environ["SCENARIO_NAME"]
 
 

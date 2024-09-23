@@ -43,10 +43,10 @@ __table = defaultdict(
     float,
     {
         e.CRATE_DESTROYED: 1,
-        e.COIN_COLLECTED: 5,
-        e.KILLED_OPPONENT: 20,
-        e.GOT_KILLED: -100,
-        e.KILLED_SELF: -200,
+        e.COIN_COLLECTED: 3,
+        e.KILLED_OPPONENT: 10,
+        e.GOT_KILLED: -20,
+        e.KILLED_SELF: -20,
         # in the future might help with very complex behaviour, eg alliancing
         e.OPPONENT_ELIMINATED: 0,
     },
@@ -57,7 +57,7 @@ def get_reward(old: dict | T.State, new: dict | T.State, events: list[str]) -> T
     old = T.parse_state(old)
     new = T.parse_state(new)
 
-    total = 0
+    total = -0.05
 
     for event, reward in __table.items():
         if event in events:

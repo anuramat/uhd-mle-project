@@ -10,7 +10,7 @@ import agent_code.vkl.typing as T
 
 def setup(self):
     # based
-    self.shadow = False
+    self.shadow = True if environ.get("SHADOW") else False
     self.fake = SimpleNamespace()
     based.setup(self.fake)
 
