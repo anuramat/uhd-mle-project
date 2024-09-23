@@ -3,7 +3,7 @@ from agent_code.vkl.preprocessing import get_aux, get_map
 from os import environ
 from os.path import join
 from random import choice, random
-from torch import float32, load, tensor, Tensor, no_grad
+from torch import float32, load, softmax, tensor, Tensor, no_grad, multinomial
 import agent_code.rule_based_agent.callbacks as based
 import agent_code.vkl.typing as T
 
@@ -52,8 +52,16 @@ def act(self, state: dict | T.State):
     if self.shadow:
         return based.act(self.fake, state)
 
-    action = T.action_i2s(int(q.argmax()))
+    idx = my_argmax(q, True)
+    action = T.action_i2s(idx)
     return action
+
+
+def my_argmax(arg: Tensor, soft: bool) -> int:
+    if not soft:
+        return int(arg.argmax())
+    proba = softmax(arg, 0)
+    return int(multinomial(proba, num_samples=1))
 
 
 def random_move(s: T.State, map: Tensor) -> str:

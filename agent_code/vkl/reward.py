@@ -57,7 +57,7 @@ def get_reward(old: dict | T.State, new: dict | T.State, events: list[str]) -> T
     old = T.parse_state(old)
     new = T.parse_state(new)
 
-    total = -0.05
+    total = 0
 
     for event, reward in __table.items():
         if event in events:
