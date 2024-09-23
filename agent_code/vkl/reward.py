@@ -4,13 +4,13 @@ from collections import defaultdict
 import agent_code.vkl.typing as T
 
 
-def rew2ret(trans: list[T.Transition], q: list, discount=0.9) -> list[T.Transition]:
+def rew2ret(trans: list[T.Transition], q: list, discount=0.98) -> list[T.Transition]:
     if len(q) == 0:
         return _rew2ret_expert(trans, discount)
     return _rew2ret_dqn(trans, q, discount)
 
 
-def _rew2ret_expert(trans: list[T.Transition], discount=0.9) -> list[T.Transition]:
+def _rew2ret_expert(trans: list[T.Transition], discount=0.98) -> list[T.Transition]:
     returns = [t.reward for t in trans]
     for i in reversed(range(len(returns) - 1)):
         returns[i] += discount * returns[i + 1]

@@ -9,7 +9,7 @@ __time_to_save = False
 
 def setup_training(self):
     self.training = True
-    self.epsilon = 0.1
+    self.epsilon = 0.01
     self.quit_on_next_episode = False
     # we want to save data from multiple copies of an agent
     global __copy_counter

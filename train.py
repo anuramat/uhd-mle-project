@@ -21,6 +21,7 @@ parser.add_argument("--input", type=str, required=True)
 parser.add_argument("--output", type=str, required=True)
 parser.add_argument("--n-workers", type=int, default=cpu_count())
 parser.add_argument("--batch-size", type=int, default=5120)
+parser.add_argument("--lr", type=float, default=3e-5)
 args = parser.parse_args()
 
 # parameters
@@ -64,7 +65,7 @@ total_steps = args.n_epochs * len(dataloader)
 
 # lightning
 raw_model.train()
-model = models.Lighter(raw_model, total_steps=total_steps)
+model = models.Lighter(raw_model, total_steps=total_steps, lr=args.lr)
 trainer = L.Trainer(accelerator="gpu", max_epochs=args.n_epochs, precision=precision)
 # # TODO figure out how to make tuner ignore the scheduler
 # tuner = Tuner(trainer)
