@@ -33,7 +33,7 @@ while true; do
 
 	}
 
-	./train.py --n-epochs 40 --input "$in" --output "$out"
+	./train.py --n-epochs 128 --input "$in" --output "$out" --lr 3e-5
 
 	# backup the model
 	cp "$out" "./output/gen${i}.pt"

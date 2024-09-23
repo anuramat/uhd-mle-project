@@ -21,7 +21,7 @@ parser.add_argument("--input", type=str, required=True)
 parser.add_argument("--output", type=str, required=True)
 parser.add_argument("--n-workers", type=int, default=cpu_count())
 parser.add_argument("--batch-size", type=int, default=5120)
-parser.add_argument("--lr", type=float, default=3e-5)
+parser.add_argument("--lr", type=float, default=3e-4)
 args = parser.parse_args()
 
 # parameters
