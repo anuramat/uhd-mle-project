@@ -20,8 +20,8 @@ def get_map(s: T.State | dict) -> Tensor:
 
     n = field.shape[1]
     x, y = s.self.pos
-    x_coord = torch.arange(-x, n - x).repeat(n, 1)
-    y_coord = torch.arange(-y, n - y).repeat(n, 1).transpose(0, 1)
+    x_coord = torch.arange(-x, n - x).repeat(n, 1).t()
+    y_coord = torch.arange(-y, n - y).repeat(n, 1)
 
     for pos, ticks in s.bombs:
         bombs[*pos] = ticks + 1  # damn, I just got bamboozled

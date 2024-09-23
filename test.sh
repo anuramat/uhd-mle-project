@@ -9,4 +9,4 @@ $MODEL is a vkl model filename.'
 scenario="$2"
 [ -z "$2" ] && scenario=classic
 export MODEL=$1 # is being read by the script internally
-python main.py play --agents vkl vkl vkl vkl --scenario "$scenario"
+python main.py play --agents vkl --scenario "$scenario" --turn-based

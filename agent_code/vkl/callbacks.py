@@ -5,6 +5,7 @@ from os.path import join
 from random import choice, random
 from torch import float32, load, softmax, tensor, Tensor, no_grad, multinomial
 import agent_code.rule_based_agent.callbacks as based
+import torch
 import agent_code.vkl.typing as T
 
 
@@ -21,10 +22,18 @@ def setup(self):
     self.q = []
 
 
+torch.set_printoptions(linewidth=400)
+
+
 def act(self, state: dict | T.State):
     # prepare shit
     s = T.parse_state(state)
-    map = get_map(s).unsqueeze(0)
+    map = get_map(s)
+    if not self.training:
+        print("-" * 200)
+        for i in range(map.shape[0]):
+            print(map[i, :, :])
+    map = map.unsqueeze(0)
     aux = tensor(get_aux(s), dtype=float32).unsqueeze(0)
 
     # do the heavy lifting
@@ -52,8 +61,9 @@ def act(self, state: dict | T.State):
     if self.shadow:
         return based.act(self.fake, state)
 
-    idx = my_argmax(q, True)
+    idx = my_argmax(q, self.training)
     action = T.action_i2s(idx)
+    print(action)
     return action
 
 

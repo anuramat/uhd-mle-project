@@ -10,6 +10,7 @@ if model_name == "rule_based_agent":
 
 
 def setup(self):
+    self.shadow = False
     model.setup(self)
     self.source_name = model_name
     if self.shadow:

@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-# # set -e
-# I'd have to verify that training/data generation both return 0
-# also first rm usually fails
-
 usage='
 Usage:
 	./strapped.sh $START_GEN'
